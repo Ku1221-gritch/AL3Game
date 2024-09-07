@@ -1,5 +1,4 @@
 #pragma once
-#define NOMINMAX
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Rect.h"
@@ -31,10 +30,10 @@ private:
 	Player* target_ = nullptr;
 
 	//追従対象とカメラの座標の差（オフセット）
-	Vector3 targetOffset_ = {0, 0, -40.0f};
+	Vector3 targetOffset_ = {0.0f, 0.0f, -25.0f};
 
 	//カメラ移動範囲
-	Rect movableArea_ = {0, 100, 0, 0};
+	Rect movableArea_ = {0, 0, 0, 0};
 
 	//カメラの目標座標
 	Vector3 targetCoordinates;

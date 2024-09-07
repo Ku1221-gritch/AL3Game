@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include"Skydome.h"
+#include"Goal.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
@@ -51,6 +52,8 @@ public: // メンバ関数
 
 	//デスフラグのgetter
 	bool IsDeathFinished() const { return deathFinished_; };
+	//クリアフラグのgetter
+	bool IsClear() const { return clearFinished_; };
 
 private: // メンバ変数
 	//ゲームのフェーズ（型）
@@ -81,6 +84,9 @@ private: // メンバ変数
 	Model* modelEnemy_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemies_;
+	//ゴール
+	Model* modelGoal_ = nullptr;
+	Goal* goal_ = nullptr;
 	//デスパーティクル
 	Model* modelDeathParticle_ = nullptr;
 	DeathParticles* deathParticles_ = nullptr;
@@ -113,6 +119,8 @@ private: // メンバ変数
 	void ChangePhase();
 	//死亡による終了フラグ
 	bool deathFinished_ = false;
+	//クリアによる終了フラグ
+	bool clearFinished_ = false;
 
 	/// <summary>
 	/// ゲームシーン用
