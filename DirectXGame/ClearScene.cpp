@@ -1,8 +1,7 @@
+#include "ClearScene.h"
 #define NOMINMAX
-
 #include "DirectXCommon.h"
 #include "Input.h"
-#include "ClearScene.h"
 #include <cmath>
 #include <numbers>
 

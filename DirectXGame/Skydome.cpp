@@ -1,6 +1,6 @@
+#include "Skydome.h"
 #include "TextureManager.h"
 #include "GameScene.h"
-#include "Skydome.h"
 #include"ViewProjection.h"
 #include <cassert>
 
@@ -21,7 +21,7 @@ void Skydome::Initialize(Model* model ) {
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = {0, 0, 0};
-	worldTransform_.scale_ = {100,100,100};
+	worldTransform_.scale_ = {300,300,300};
 }
 
 void Skydome::Update() { 

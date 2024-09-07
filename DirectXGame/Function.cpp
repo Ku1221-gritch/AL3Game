@@ -1,6 +1,5 @@
 #include "Function.h"
 
-
 Matrix4x4 MakeRotateXMatrix(float radian) {
 	Matrix4x4 Answer;
 	Answer.m[0][0] = 1.0f;

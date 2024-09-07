@@ -52,17 +52,18 @@ void GameScene::Initialize() {
 	viewProjection_.farZ = 200;
 	viewProjection_.Initialize();
 
+	//一旦敵停止
 	// 敵キャラの生成
-	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
+	//modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
 
-	for (int32_t i = 5; i < 50; ++i) {
-		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
-		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
+	//for (int32_t i = 5; i < 50; ++i) {
+	//	Enemy* newEnemy = new Enemy();
+	//	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
+	//	newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 
-		enemies_.push_back(newEnemy);
-		newEnemy->SetMapChipField(mapChipField_);
-	}
+	//	enemies_.push_back(newEnemy);
+	//	newEnemy->SetMapChipField(mapChipField_);
+	//}
 
 	// 座標をマップチップ番号で指定
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 9);
@@ -133,12 +134,12 @@ void GameScene::Update() {
 		// スカイドームの更新処理
 		skydome_->Update();
 
+		// 一旦敵停止
 		// 敵キャラの更新
 		/*
 		for (Enemy* enemy : enemies_) {
 		    enemy->Update();
 		}
-
 		*/
 
 		// ゴールの更新
