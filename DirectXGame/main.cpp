@@ -1,12 +1,12 @@
 #include "Audio.h"
 #include "AxisIndicator.h"
+#include "ClearScene.h"
 #include "DirectXCommon.h"
+#include "GameScene.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "TitleScene.h"
-#include "GameScene.h"
-#include "ClearScene.h"
 #include "WinApp.h"
 
 GameScene* gameScene = nullptr;
@@ -23,15 +23,11 @@ enum class Scene {
 
 Scene scene = Scene::kTitle;
 
-// クリアまでのタイマー
-int clearTimer_;
-
 void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
-		clearTimer_ = 0;
 		if (titleScene->IsFinished()) {
-
+			
 			// シーン変更
 			scene = Scene::kGame;
 			// 旧シーンの解放
@@ -43,7 +39,6 @@ void ChangeScene() {
 		}
 		break;
 	case Scene::kGame:
-		clearTimer_++;
 		if (gameScene->IsDeathFinished()) {
 			// シーン変更
 			scene = Scene::kTitle;
@@ -53,8 +48,7 @@ void ChangeScene() {
 
 			titleScene = new TitleScene;
 			titleScene->Initialize();
-		}
-		if (clearTimer_ >=600) {
+		}else if (gameScene->IsClear()) {
 			// シーン変更
 			scene = Scene::kClear;
 
@@ -66,6 +60,7 @@ void ChangeScene() {
 		}
 		break;
 	case Scene::kClear:
+
 		if (clearScene->IsFinished()) {
 
 			// シーン変更
