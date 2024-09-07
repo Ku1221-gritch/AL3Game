@@ -8,7 +8,6 @@
 #include <iostream>
 #include"Rect.h"
 #include "MapChipField.h"
-#include "imgui.h"
 
 Player::Player() {}
 
@@ -101,7 +100,7 @@ void Player::Update() {
 
 			// 自キャラの角度を設定する
 			worldTransform_.rotation_.y = std::lerp(turnFirstRotationY_, destinationRotationY, 1 - turnTimer_ / kTimeTurn);
-		}
+	 	}
 	}
 
 	// 行列計算
@@ -114,8 +113,10 @@ void Player::Draw() {
 
 //移動入力
 void Player::MovementInput() {
+
 	// 接地状態
 	if (onGround_) {
+		velocity_.x += 0.08f;
 		// 左右移動操作
 		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
 
@@ -213,7 +214,6 @@ void Player::MapCollisionDetectionUp(CollisionMapInfo& info)
 		info.movement_.y = std::max(0.0f, info.movement_.y);
 		//天井に当たったことを記録する
 		info.onCeiling_ = true;
-		ImGui::Text("HIT");
 
 	}
 
@@ -263,7 +263,6 @@ void Player::MapCollisionDetectionDown(CollisionMapInfo& info)
 		info.movement_.y = std::max(0.0f, info.movement_.y);
 		// 天井に当たったことを記録する
 		info.onLanding_ = true;
-		ImGui::Text("HIT");
 	}
 }
 
@@ -307,7 +306,6 @@ void Player::MapCollisionDetectionRight(CollisionMapInfo& info) {
 		info.movement_.x = std::max(0.0f, rect.left - worldTransform_.translation_.x - kWidth / 2 - kBlank);
 		// 壁に当たったことを記録する
 		info.onWallcontact = true;
-		ImGui::Text("HIT");
 	}
 
 }
@@ -352,7 +350,6 @@ void Player::MapCollisionDetectionLeft(CollisionMapInfo& info) {
 		info.movement_.x = std::min(0.0f, rect.left - worldTransform_.translation_.x + kWidth / 2 + kBlank);
 		// 壁に当たったことを記録する
 		info.onWallcontact = true;
-		ImGui::Text("HIT");
 	}
 
 }
@@ -456,6 +453,12 @@ void Player::OnCollision(const Enemy* enemy) {
 	isDead_ = true;
 }
 
+// プレイヤーとゴールの当たった場合の処理
+void Player::OnCollision(const Goal* goal) {
+	(void)goal;
+	// クリアフラグを立てる
+	isClear_ = true;
+}
 
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorner] = {

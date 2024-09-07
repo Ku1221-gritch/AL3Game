@@ -15,6 +15,7 @@
 #include "Function.h"
 #include "MapChipField.h"
 #include"DeathParticles.h"
+#include"GameOverText.h"
 #include "CameraController.h"
 
 /// <summary>
@@ -49,7 +50,7 @@ public: // メンバ関数
 	void Draw();
 
 	//デスフラグのgetter
-	bool IsFinished() const { return finished_; };
+	bool IsDeathFinished() const { return deathFinished_; };
 
 private: // メンバ変数
 	//ゲームのフェーズ（型）
@@ -83,6 +84,9 @@ private: // メンバ変数
 	//デスパーティクル
 	Model* modelDeathParticle_ = nullptr;
 	DeathParticles* deathParticles_ = nullptr;
+	//ゲームオーバーテキスト
+	Model* modelGameOverText_ = nullptr;
+	GameOverText* gameOverText_ = nullptr;
 	//カメラコントローラー
 	CameraController* cameraController_ = nullptr;
 	//デバッグカメラ
@@ -107,8 +111,9 @@ private: // メンバ変数
 	bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 	//フェーズの切り替え
 	void ChangePhase();
-	//終了フラグ
-	bool finished_ = false;
+	//死亡による終了フラグ
+	bool deathFinished_ = false;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

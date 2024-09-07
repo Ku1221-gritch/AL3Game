@@ -5,9 +5,9 @@
 #include "WorldTransform.h"
 #include"Skydome.h"
 
-class TitleScene {
+class ClearScene {
 public:
-	~TitleScene();
+	~ClearScene();
 
 	void Initialize();
 
@@ -18,13 +18,13 @@ public:
 	bool IsFinished() const { return finished_; }
 
 private:
-	static inline const float kTimeTitleMove = 2.0f;
+	static inline const float kTimeTextMove = 2.0f;
 
 	ViewProjection viewProjection_;
 	WorldTransform worldTransformTitle_;
 	WorldTransform worldTransformPlayer_;
 
-	Model* modelTitle_ = nullptr;
+	Model* modelClear_ = nullptr;
 	Model* modelPlayer_ = nullptr;
 	// スカイドーム
 	Model* modelSkydome_ = nullptr;

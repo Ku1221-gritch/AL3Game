@@ -26,7 +26,7 @@ void DeathParticles::Update() {
 	}
 
 	//カウンターを1フレーム分の秒数
-	counter += 1.0f / 60.0f;
+	counter += 3.0f / 60.0f;
 
 	//存続時間の上限に達したら
 	if (counter >= kDuration) {

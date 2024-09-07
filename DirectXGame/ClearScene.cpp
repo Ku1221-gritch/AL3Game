@@ -1,18 +1,18 @@
 #define NOMINMAX
 
-#include "TitleScene.h"
 #include "DirectXCommon.h"
 #include "Input.h"
+#include "ClearScene.h"
 #include <cmath>
 #include <numbers>
 
-TitleScene::~TitleScene() {
-	delete modelTitle_;
+ClearScene::~ClearScene() {
+	delete modelClear_;
 	delete modelPlayer_;
 }
 
-void TitleScene::Initialize() {
-	modelTitle_ = Model::CreateFromOBJ("text", true);
+void ClearScene::Initialize() {
+	modelClear_ = Model::CreateFromOBJ("gameclear", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	// スカイドーム
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
@@ -33,14 +33,14 @@ void TitleScene::Initialize() {
 	worldTransformTitle_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 }
 
-void TitleScene::Update() {
+void ClearScene::Update() {
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		finished_ = true;
 	}
 	counter_ += 1.0f / 60.0f;
-	counter_ = std::fmod(counter_, kTimeTitleMove);
+	counter_ = std::fmod(counter_, kTimeTextMove);
 
-	float angle = counter_ / kTimeTitleMove * 2.0f * std::numbers::pi_v<float>;
+	float angle = counter_ / kTimeTextMove * 2.0f * std::numbers::pi_v<float>;
 
 	worldTransformTitle_.translation_.y = std::sin(angle) + 10.0f;
 
@@ -52,7 +52,7 @@ void TitleScene::Update() {
 	worldTransformPlayer_.UpdateMatrix();
 }
 
-void TitleScene::Draw() {
+void ClearScene::Draw() {
 	DirectXCommon* dxCommon_ = DirectXCommon::GetInstance();
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
@@ -60,7 +60,8 @@ void TitleScene::Draw() {
 	Model::PreDraw(commandList);
 	// スカイドームの描画処理
 	skydome_->Draw(&viewProjection_);
-	modelTitle_->Draw(worldTransformTitle_, viewProjection_);
+	modelClear_->Draw(worldTransformTitle_, viewProjection_);
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_);
+
 	Model::PostDraw();
 }

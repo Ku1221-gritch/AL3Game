@@ -7,6 +7,7 @@
 
 class MapChipField;
 class Enemy;
+class Goal;
 
 class Player
 {
@@ -73,11 +74,17 @@ public:
 	// AABBを取得
 	AABB GetAABB();
 
-	//衝突判定
+	//敵との衝突判定
 	void OnCollision(const Enemy* enemy);
+
+	// ゴールとの衝突判定
+	void OnCollision(const Goal* goal);
 
 	//デスフラグのgetter
 	bool IsDead() const { return isDead_; }
+
+	// クリアフラグのgetter
+	bool IsClear() const { return isClear_; }
 
 	private:
 		//マップチップによるフィールド
@@ -120,6 +127,9 @@ public:
 
 		//デスフラグ
 	    bool isDead_ = false;
+
+		//クリアフラグ
+	    bool isClear_ = false;
 
 		//重力加速度（下方向）
 	    static inline const float kGravityAcceleration = 0.1f;

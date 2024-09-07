@@ -46,6 +46,5 @@ public:
 
 	MapChipData mapChipData_;
 
-
 	IndexSet GetMapChipIndexSetByPosition(const Vector3& position);
 };

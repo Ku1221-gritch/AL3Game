@@ -41,7 +41,7 @@ void Draw();
 void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 
 //敵の動く速度
-static inline const float kWalkSpeed = 0.1f;
+static inline const float kWalkSpeed = 0.5f;
 
 //最初の角度[度]
 static inline const float kWalkMotionAngleStart = 0.05f;
@@ -59,18 +59,22 @@ Vector3 velocity_ = {};
 Vector3 GetWorldPosition();
 // AABBを取得
 AABB GetAABB();
-//衝突応答
+// プレイヤーとの衝突判定
 void OnCollision(const Player* player);
 
 private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
+
 	// カメラ
 	ViewProjection* viewProjection_ = nullptr;
+
 	// モデル
 	Model* model_ = nullptr;
+
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+
 	// 敵の当たり判定サイズ
 	static inline const float kWidth = 1.8f;
 	static inline const float kHeight = 1.8f;

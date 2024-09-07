@@ -1,29 +1,37 @@
 #include "Audio.h"
 #include "AxisIndicator.h"
 #include "DirectXCommon.h"
-#include "GameScene.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "TitleScene.h"
+#include "GameScene.h"
+#include "ClearScene.h"
 #include "WinApp.h"
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+ClearScene* clearScene = nullptr;
 
 enum class Scene {
 	kUnknown = 0,
 
 	kTitle,
 	kGame,
+	kClear,
 };
 
 Scene scene = Scene::kTitle;
 
+// クリアまでのタイマー
+int clearTimer_;
+
 void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
+		clearTimer_ = 0;
 		if (titleScene->IsFinished()) {
+
 			// シーン変更
 			scene = Scene::kGame;
 			// 旧シーンの解放
@@ -35,13 +43,36 @@ void ChangeScene() {
 		}
 		break;
 	case Scene::kGame:
-
-		if (gameScene->IsFinished()) {
+		clearTimer_++;
+		if (gameScene->IsDeathFinished()) {
 			// シーン変更
 			scene = Scene::kTitle;
 
 			delete gameScene;
 			gameScene = nullptr;
+
+			titleScene = new TitleScene;
+			titleScene->Initialize();
+		}
+		if (clearTimer_ >=600) {
+			// シーン変更
+			scene = Scene::kClear;
+
+			delete gameScene;
+			gameScene = nullptr;
+
+			clearScene = new ClearScene;
+			clearScene->Initialize();
+		}
+		break;
+	case Scene::kClear:
+		if (clearScene->IsFinished()) {
+
+			// シーン変更
+			scene = Scene::kTitle;
+
+			delete clearScene;
+			clearScene = nullptr;
 
 			titleScene = new TitleScene;
 			titleScene->Initialize();
@@ -57,6 +88,9 @@ void UpdateScene() {
 	case Scene::kGame:
 		gameScene->Update();
 		break;
+	case Scene::kClear:
+		clearScene->Update();
+		break;
 	}
 }
 void DrawScene() {
@@ -66,6 +100,9 @@ void DrawScene() {
 		break;
 	case Scene::kGame:
 		gameScene->Draw();
+		break;
+	case Scene::kClear:
+		clearScene->Draw();
 		break;
 	}
 }
@@ -82,7 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow(L"GC2B_07_サトウ_クウ_AL3");
+	win->CreateGameWindow(L"GC2B_07_サトウ_クウ_10秒生き残れ！強風ピヨ!");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
@@ -162,6 +199,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	delete titleScene;
 	delete gameScene;
+	delete clearScene;
 
 	Model::StaticInitialize();
 	audio->Finalize();
