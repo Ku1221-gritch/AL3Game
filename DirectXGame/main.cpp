@@ -43,7 +43,6 @@ void ChangeScene() {
 		}
 		break;
 	case Scene::kGame:
-		clearTimer_++;
 		if (gameScene->IsDeathFinished()) {
 			// シーン変更
 			scene = Scene::kTitle;

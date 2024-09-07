@@ -116,7 +116,6 @@ void Player::MovementInput() {
 
 	// 接地状態
 	if (onGround_) {
-		velocity_.x += 0.08f;
 		// 左右移動操作
 		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
 

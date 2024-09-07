@@ -4,6 +4,7 @@
 #include "WorldTransform.h"
 #include "Model.h"
 
+
 class Skydome {
 	public:
 	/// <summary>
