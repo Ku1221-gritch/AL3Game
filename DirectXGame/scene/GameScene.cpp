@@ -80,7 +80,7 @@ void GameScene::Initialize() {
 	deathParticles_ = new DeathParticles;
 	deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, playerPosition);
 
-	//ゲームオーバーテキストの生成
+	// ゲームオーバーテキストの生成
 	gameOverText_ = new GameOverText;
 	gameOverText_->Initialize();
 
@@ -97,6 +97,12 @@ void GameScene::Initialize() {
 	cameraController_->Reset();
 	// ゲームプレイフェーズから開始
 	phase_ = Phase::kPlay;
+
+	// ゴール
+	modelGoal_ = Model::CreateFromOBJ("goal", true);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
+	goal_ = new Goal();
+	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 }
 
 void GameScene::Update() {
@@ -130,9 +136,17 @@ void GameScene::Update() {
 
 		// 一旦敵停止
 		// 敵キャラの更新
-		//for (Enemy* enemy : enemies_) {
-		//	enemy->Update();
-		//}
+		/*
+		for (Enemy* enemy : enemies_) {
+		    enemy->Update();
+		}
+		*/
+
+		// ゴールの更新
+		goal_->Update();
+		if (goal_->isGoal()) {
+			clearFinished_ = true;
+		}
 
 		// カメラの処理
 		if (isDebugCameraActive_) {
@@ -150,9 +164,9 @@ void GameScene::Update() {
 
 		break;
 	case Phase::kDeath:
-	
-			deathFinished_ = true;
-		
+
+		deathFinished_ = true;
+
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();
 		}
@@ -232,6 +246,8 @@ void GameScene::Draw() {
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
 	}
+	// ゴールの描画
+	goal_->Draw();
 
 	// デスパーティクルの描画処理
 	if (deathParticles_) {
@@ -282,7 +298,7 @@ void GameScene::CheckAllCollisions() {
 #pragma region 自キャラと敵キャラの当たり判定
 	{
 		// 判定対象1と2の座標
-		AABB aabb1, aabb2;
+		AABB aabb1, aabb2, aabb3;
 
 		// 自キャラの座標
 		aabb1 = player_->GetAABB();
@@ -299,6 +315,12 @@ void GameScene::CheckAllCollisions() {
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
+		}
+		// ゴールの座標
+		aabb3 = goal_->GetAABB();
+		// ゴールに自キャラが触れた時
+		if (IsCollision(aabb1, aabb3)) {
+			goal_->OnCollision(player_);
 		}
 	}
 #pragma endregion
