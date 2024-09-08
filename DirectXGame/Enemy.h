@@ -59,6 +59,24 @@ public:
 	// プレイヤーとの衝突判定
 	void OnCollision(const Player* player);
 
+//マップチップとの当たり判定
+void MapCollisionDetectionUp(CollisionMapInfo& info);
+void MapCollisionDetectionDown(CollisionMapInfo& info);
+void MapCollisionDetectionRight(CollisionMapInfo& info);
+void MapCollisionDetectionLeft(CollisionMapInfo& info);
+Vector3 CornerPosition(const Vector3& center, Corner corner);
+
+
+// 壁に接触している場合の処理
+void WallContactProcess(const CollisionMapInfo& info);
+
+//接地状態の切り替え処理
+void GroundingStateSwitching(const CollisionMapInfo& info);
+
+// 判定結果を反映して移動させる
+void MoveJudgmentResults(const CollisionMapInfo& info);
+
+
 private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
@@ -71,4 +89,18 @@ private:
 	// 敵の当たり判定サイズ
 	static inline const float kWidth = 1.8f;
 	static inline const float kHeight = 1.8f;
+	static inline const float kBlank = 0.1f;
+
+	static inline const float kAttenuation = 0.3f;
+	static inline const float kAttenuationLanding = 0.1f;
+	static inline const float kAdsorptionLanding = 0.2f;
+
+
+	// 接地状態フラグ
+	bool onGround_ = false;
+	// 重力加速度（下方向）
+	static inline const float kGravityAcceleration = 0.1f;
+	// 最大落下速度（下方向
+	static inline const float kLimitFallSpeed = 0.7f;
+
 };

@@ -448,7 +448,7 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) { 
 	(void)enemy; 
 	//デスフラグを立てる
-	isDead_ = true;
+	//isDead_ = true;
 }
 
 //プレイヤーと棘の当たった場合の処理
@@ -465,7 +465,6 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
         {+kWidth / 2.0f, +kHeight / 2.0f, 0},
         {-kWidth / 2.0f, +kHeight / 2.0f, 0}
     };
-
+	
 	return center + offsetTable[static_cast<uint32_t>(corner)];
-
 }
