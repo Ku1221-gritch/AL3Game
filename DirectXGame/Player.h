@@ -77,9 +77,6 @@ public:
 	//敵との衝突判定
 	void OnCollision(const Enemy* enemy);
 
-	// ゴールとの衝突判定
-	void OnCollision(const Goal* goal);
-
 	//デスフラグのgetter
 	bool IsDead() const { return isDead_; }
 
