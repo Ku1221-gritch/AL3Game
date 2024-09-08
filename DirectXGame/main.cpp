@@ -7,16 +7,19 @@
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "TitleScene.h"
+#include "SelectScene.h"
 #include "WinApp.h"
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+SelectScene* selectScene = nullptr;
 ClearScene* clearScene = nullptr;
 
 enum class Scene {
 	kUnknown = 0,
 
 	kTitle,
+	kSelect,
 	kGame,
 	kClear,
 };
@@ -29,15 +32,29 @@ void ChangeScene() {
 		if (titleScene->IsFinished()) {
 			
 			// シーン変更
-			scene = Scene::kGame;
+			scene = Scene::kSelect;
 			// 旧シーンの解放
 			delete titleScene;
 			titleScene = nullptr;
+			// 新シーンの生成と初期化
+			selectScene = new SelectScene;
+			selectScene->Initialize();
+		}
+		break;
+		case Scene::kSelect:
+		if (selectScene->IsFinished()) {
+			
+			// シーン変更
+			scene = Scene::kGame;
+			// 旧シーンの解放
+			delete selectScene;
+			selectScene = nullptr;
 			// 新シーンの生成と初期化
 			gameScene = new GameScene;
 			gameScene->Initialize();
 		}
 		break;
+
 	case Scene::kGame:
 		if (gameScene->IsDeathFinished()) {
 			// シーン変更
@@ -80,6 +97,9 @@ void UpdateScene() {
 	case Scene::kTitle:
 		titleScene->Update();
 		break;
+	case Scene::kSelect:
+		selectScene->Update();
+		break;
 	case Scene::kGame:
 		gameScene->Update();
 		break;
@@ -92,6 +112,9 @@ void DrawScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Draw();
+		break;
+	case Scene::kSelect:
+		selectScene->Draw();
 		break;
 	case Scene::kGame:
 		gameScene->Draw();
@@ -194,6 +217,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	delete titleScene;
 	delete gameScene;
+	delete selectScene;
 	delete clearScene;
 
 	Model::StaticInitialize();
