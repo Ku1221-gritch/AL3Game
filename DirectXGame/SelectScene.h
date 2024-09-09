@@ -58,6 +58,11 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	//操作説明のモデル
+	Model* modelMoveText_ = nullptr;
+	WorldTransform worldTransformMoveText_;
+	Model* modelJumpText_ = nullptr;
+	WorldTransform worldTransformJumpText_;
 	// 画像
 	Sprite* sprite_ = nullptr;
 	// スカイドーム
@@ -100,6 +105,8 @@ private: // メンバ変数
 	bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 
 	bool finished_ = false;
+	static inline const float kTimeTextMove = 2.0f;
+	float counter_ = 0.0f;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

@@ -13,6 +13,8 @@ SelectScene::~SelectScene() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
+	delete modelMoveText_;
+	delete modelJumpText_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -28,6 +30,7 @@ void SelectScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
+	
 	// ブロック
 	modelBlock_ = Model::Create();
 	worldTransform_.Initialize();
@@ -48,7 +51,7 @@ void SelectScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -81,11 +84,39 @@ void SelectScene::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+
+	// 操作説明のモデル
+	modelMoveText_ = Model::CreateFromOBJ("ugoku", true);
+	const float kTextMove = 2.0f;
+	worldTransformMoveText_.Initialize();
+	worldTransformMoveText_.scale_ = {kTextMove, kTextMove, kTextMove};
+	worldTransformMoveText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformMoveText_.translation_ = (0.0f, 0.0f, 20.0f);
+
+	modelJumpText_ = Model::CreateFromOBJ("haneru", true);
+	worldTransformJumpText_.Initialize();
+	worldTransformJumpText_.scale_ = {kTextMove, kTextMove, kTextMove};
+	worldTransformJumpText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformJumpText_.translation_ = (0.0f, 0.0f, 25.0f);
+	
 }
 
 void SelectScene::Update() {
 
+	viewProjection_.TransferMatrix();
+	worldTransformMoveText_.UpdateMatrix();
+	counter_ += 1.0f / 60.0f;
+	counter_ = std::fmod(counter_, kTimeTextMove);
+	float angle = counter_ / kTimeTextMove * 2.0f * std::numbers::pi_v<float>;
+	worldTransformMoveText_.translation_.x = std::sin(angle) + 15.0f;
+	worldTransformMoveText_.translation_.y = 12.0f;
+
+	worldTransformJumpText_.UpdateMatrix();
+	worldTransformJumpText_.translation_.y = std::sin(angle) + 12.0f;
+	//worldTransformMoveText_.translation_.y = 12.0f;
+
 	cameraController_->Update();
+
 	// ブロックの更新
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -177,13 +208,11 @@ void SelectScene::Draw() {
 	// スカイドームの描画処理
 	skydome_->Draw(&viewProjection_);
 	// プレイヤーの描画処理
-
 	player_->Draw();
 
-	// デスパーティクルの描画処理
-	if (deathParticles_) {
-		deathParticles_->Draw();
-	}
+	modelMoveText_->Draw(worldTransformMoveText_, viewProjection_);
+	modelJumpText_->Draw(worldTransformJumpText_, viewProjection_);
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
