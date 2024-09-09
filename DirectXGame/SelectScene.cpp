@@ -40,7 +40,7 @@ void SelectScene::Initialize() {
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/selectBlocks.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -128,11 +128,6 @@ void SelectScene::Update() {
 		} else if (isDebugCameraActive_ == false) {
 			isDebugCameraActive_ = true;
 		}
-	}
-
-	// デスパーティクルの更新処理
-	if (deathParticles_) {
-		deathParticles_->Update();
 	}
 
 	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
