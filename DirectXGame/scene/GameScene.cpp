@@ -66,7 +66,7 @@ void GameScene::Initialize() {
 	//}
 
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 2);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -90,9 +90,9 @@ void GameScene::Initialize() {
 	cameraController_->Initialize();
 	// 追従対象をセット
 	cameraController_->SetTarget(player_);
-	// 移動範囲の制限
+	// カメラの範囲制限
 	//左右下上
-	movableArea_ = {17.0f, 72.0f, 9.5f, 28.0f};
+	movableArea_ = {17.0f, 72.0f, 9.0f, 80.0f};
 	cameraController_->SetMoveableArea(movableArea_);
 	// リセット（瞬間合わせ）
 	cameraController_->Reset();
