@@ -103,17 +103,19 @@ void SelectScene::Initialize() {
 
 void SelectScene::Update() {
 
+	//ウゴクとハネルの移動処理
 	viewProjection_.TransferMatrix();
 	worldTransformMoveText_.UpdateMatrix();
 	counter_ += 1.0f / 60.0f;
 	counter_ = std::fmod(counter_, kTimeTextMove);
 	float angle = counter_ / kTimeTextMove * 2.0f * std::numbers::pi_v<float>;
+	//ウゴク
 	worldTransformMoveText_.translation_.x = std::sin(angle) + 15.0f;
 	worldTransformMoveText_.translation_.y = 12.0f;
-
+	//ハネル
 	worldTransformJumpText_.UpdateMatrix();
 	worldTransformJumpText_.translation_.y = std::sin(angle) + 12.0f;
-	//worldTransformMoveText_.translation_.y = 12.0f;
+	
 
 	cameraController_->Update();
 
@@ -160,12 +162,15 @@ void SelectScene::Update() {
 			isDebugCameraActive_ = true;
 		}
 	}
+#endif // _DEBUG
 
-	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
-		finished_ = true;
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		proceedStage1_ = true;
 	}
 
-#endif // _DEBUG
+	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+		backTitle_ = true;
+	}
 }
 
 void SelectScene::Draw() {

@@ -51,7 +51,10 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	bool IsFinished() const { return finished_; }
+	//ステージ1に進む
+	bool ProceedStage1_() const { return proceedStage1_; }
+	//タイトルに戻る
+	bool IsBackTitle_() const { return backTitle_; }
 
 private: // メンバ変数
 
@@ -104,7 +107,12 @@ private: // メンバ変数
 	// AABB同士の交差判定
 	bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 
-	bool finished_ = false;
+	//ステージ1に進む
+	bool proceedStage1_ = false;
+	//タイトルに戻る
+	bool backTitle_ = false;
+
+	//ウゴクハネル用
 	static inline const float kTimeTextMove = 2.0f;
 	float counter_ = 0.0f;
 	/// <summary>

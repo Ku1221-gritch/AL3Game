@@ -110,6 +110,10 @@ void GameScene::Update() {
 
 	ChangePhase();
 
+	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+		backSelect_ = true;
+	}
+
 	switch (phase_) {
 	// ゲームプレイフェーズの処理
 	case Phase::kPlay:
