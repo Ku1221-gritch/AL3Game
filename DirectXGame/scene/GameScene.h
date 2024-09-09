@@ -7,16 +7,17 @@
 #include "Sprite.h"
 #include "Player.h"
 #include "Enemy.h"
-#include"Skydome.h"
-#include"Goal.h"
+#include "Needle.h"
+#include "Skydome.h"
+#include "Goal.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 #include<vector>
 #include "Function.h"
 #include "MapChipField.h"
-#include"DeathParticles.h"
-#include"GameOverText.h"
+#include "DeathParticles.h"
+#include "GameOverText.h"
 #include "CameraController.h"
 
 /// <summary>
@@ -75,6 +76,10 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr;
 	//ブロック
 	Model* modelBlock_ = nullptr;
+	//棘
+	Model* modelNeedle_ = nullptr;
+	Needle* needle_ = nullptr;
+	std::list<Needle*> needles_;
 	//マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
@@ -107,7 +112,7 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 	//ImGuiで値を入力する変数
 	float inputFloat3[3] = {0.0f, 0.0f, 0.0f};
-	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	std::vector<std::vector<WorldTransform*>> worldTransformMapChip_;
 	// カメラ移動範囲
 	Rect movableArea_ = {};
 	void GenerateBlocks();

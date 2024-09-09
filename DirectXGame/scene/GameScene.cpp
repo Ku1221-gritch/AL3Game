@@ -13,17 +13,24 @@ GameScene::~GameScene() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
 		}
 	}
-	worldTransformBlocks_.clear();
+	worldTransformMapChip_.clear();
 
+	//複数の敵のデリート
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
 	enemies_.clear();
+
+	//複数の棘のデリート
+	for (Needle* needle : needles_) {
+		delete needle;
+	}
+	needles_.clear();
 }
 
 // 初期化
@@ -33,7 +40,7 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	// ブロック
+	// マップチップで配置するオブジェクト
 	modelBlock_ = Model::Create();
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
@@ -65,8 +72,17 @@ void GameScene::Initialize() {
 	//	newEnemy->SetMapChipField(mapChipField_);
 	//}
 
+	// 棘の生成
+	modelNeedle_ = Model::CreateFromOBJ("needle", true);
+	Needle* newNeedle = new Needle();
+	Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(6 , 5);
+	newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
+	needles_.push_back(newNeedle);
+	newNeedle->SetMapChipField(mapChipField_);
+
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 2);
+	//プレイヤーの初期位置
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -90,8 +106,7 @@ void GameScene::Initialize() {
 	cameraController_->Initialize();
 	// 追従対象をセット
 	cameraController_->SetTarget(player_);
-	// カメラの範囲制限
-	//左右下上
+	// カメラの範囲制限（左,右,下,上）
 	movableArea_ = {17.0f, 72.0f, 9.0f, 80.0f};
 	cameraController_->SetMoveableArea(movableArea_);
 	// リセット（瞬間合わせ）
@@ -115,7 +130,7 @@ void GameScene::Update() {
 	case Phase::kPlay:
 		cameraController_->Update();
 		// ブロックの更新
-		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 				if (!worldTransformBlock)
 					continue;
@@ -142,6 +157,11 @@ void GameScene::Update() {
 		    enemy->Update();
 		}
 		*/
+
+		//棘の更新
+		for (Needle* needle : needles_) {
+			needle->Update();
+		}
 
 		// ゴールの更新
 		goal_->Update();
@@ -222,7 +242,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// ブロックの描画
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock)
 				continue;
@@ -275,21 +295,21 @@ void GameScene::Draw() {
 
 void GameScene::GenerateBlocks() {
 	// 要素数
-	uint32_t kNumBlockVirtical = mapChipField_->GetNumBlockVirtical();
-	uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+	uint32_t kNumMapChipVirtical = mapChipField_->GetNumMapChipVirtical();
+	uint32_t kNumMapChipHorizontal = mapChipField_->GetNumMapChipHorizontal();
 	// 要素数を変更する
-	worldTransformBlocks_.resize(kNumBlockVirtical);
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
+	worldTransformMapChip_.resize(kNumMapChipVirtical);
+	for (uint32_t i = 0; i < kNumMapChipVirtical; ++i) {
+		worldTransformMapChip_[i].resize(kNumMapChipHorizontal);
 	}
 	// ブロックの生成
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+	for (uint32_t i = 0; i < kNumMapChipVirtical; ++i) {
+		for (uint32_t j = 0; j < kNumMapChipHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
-				worldTransformBlocks_[i][j] = worldTransform;
-				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+				worldTransformMapChip_[i][j] = worldTransform;
+				worldTransformMapChip_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
 			}
 		}
 	}
