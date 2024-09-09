@@ -451,6 +451,13 @@ void Player::OnCollision(const Enemy* enemy) {
 	isDead_ = true;
 }
 
+//プレイヤーと棘の当たった場合の処理
+void Player::OnCollision(const Needle* needle) {
+	(void)needle;
+	// デスフラグを立てる
+	isDead_ = true;
+}
+
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorner] = {
 	    {+kWidth / 2.0f, -kHeight / 2.0f, 0},

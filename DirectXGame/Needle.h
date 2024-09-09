@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "Model.h"
 #include "struct.h"
 
 class MapChipField;
@@ -38,16 +38,12 @@ public:
 	void Draw();
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
-
-	// 敵の動く速度
-	static inline const float kWalkSpeed = 0.5f;
-
 	// 最初の角度[度]
-	static inline const float kWalkMotionAngleStart = 0.05f;
+	static inline const float kWalkMotionAngleStart = 0.1f;
 	// 最後の角度[度]
-	static inline const float kWalkMotionAngleEnd = 0.3f;
+	static inline const float kWalkMotionAngleEnd = 5.0f;
 	// アニメーションの周期となる時間[秒]
-	static inline const float kWalkMotionTime = 0.3f;
+	static inline const float kWalkMotionTime = 0.5f;
 	// 経過時間
 	float walkTimer_ = 0.0f;
 	// 速度
@@ -59,20 +55,16 @@ public:
 	// プレイヤーとの衝突判定
 	void OnCollision(const Player* player);
 
-	private:
+private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
-
 	// カメラ
 	ViewProjection* viewProjection_ = nullptr;
-
 	// モデル
 	Model* model_ = nullptr;
-
 	// ワールド変換データ
 	WorldTransform worldTransform_;
-
 	// 棘の当たり判定サイズ
-	static inline const float kWidth = 1.9f;
-	static inline const float kHeight = 1.9f;
+	static inline const float kWidth = 1.8f;
+	static inline const float kHeight = 1.8f;
 };

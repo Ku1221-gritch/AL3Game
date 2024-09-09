@@ -74,11 +74,15 @@ void GameScene::Initialize() {
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
-	Needle* newNeedle = new Needle();
-	Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(6 , 5);
-	newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
-	needles_.push_back(newNeedle);
-	newNeedle->SetMapChipField(mapChipField_);
+
+	//棘の位置
+	for (int i = 0; i < 20; ++i) {
+		Needle* newNeedle = new Needle();
+		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x,needlePos[i].y);
+		newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
+		needles_.push_back(newNeedle);
+		newNeedle->SetMapChipField(mapChipField_);
+	}
 
 	// 座標をマップチップ番号で指定
 	//プレイヤーの初期位置
@@ -267,6 +271,10 @@ void GameScene::Draw() {
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
 	}
+	//棘の描画処理
+	for (Needle* needle : needles_) {
+		needle->Draw();
+	}
 	// ゴールの描画
 	goal_->Draw();
 
@@ -316,32 +324,45 @@ void GameScene::GenerateBlocks() {
 }
 
 void GameScene::CheckAllCollisions() {
-#pragma region 自キャラと敵キャラの当たり判定
+#pragma region プレイヤーの当たり判定
 	{
 		// 判定対象1と2の座標
-		AABB aabb1, aabb2, aabb3;
+		AABB aabb1, aabb2, aabb3, aabb4;
 
-		// 自キャラの座標
+		// プレイヤーの座標
 		aabb1 = player_->GetAABB();
 
-		// 自キャラと敵全ての当たり判定
+		// プレイヤーと敵全ての当たり判定
 		for (Enemy* enemy : enemies_) {
 			// 敵の座標
 			aabb2 = enemy->GetAABB();
 
 			// AABB同士の交差判定
 			if (IsCollision(aabb1, aabb2)) {
-				// 自キャラの衝突時コールバックを呼び出す
+				// プレイヤーの衝突時コールバックを呼び出す
 				player_->OnCollision(enemy);
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
 		}
-		// ゴールの座標
+		//プレイヤーとゴールの当たり判定
 		aabb3 = goal_->GetAABB();
-		// ゴールに自キャラが触れた時
+		// ゴールにプレイヤーが触れた時
 		if (IsCollision(aabb1, aabb3)) {
+			//ゴールの衝突時コールバックを呼び出す
 			goal_->OnCollision(player_);
+		}
+		// プレイヤーと棘全ての当たり判定
+		for (Needle* needle : needles_) {
+			// プレイヤーと棘の当たり判定
+			aabb4 = needle->GetAABB();
+			// 棘にプレイヤーが触れた時
+			if (IsCollision(aabb1, aabb4)) {
+				// プレイヤーの衝突時コールバックを呼び出す
+				player_->OnCollision(needle);
+				//棘の衝突時コールバックを呼び出す
+				needle->OnCollision(player_);
+			}
 		}
 	}
 #pragma endregion

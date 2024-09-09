@@ -7,6 +7,7 @@
 
 class MapChipField;
 class Enemy;
+class Needle;
 class Goal;
 
 class Player
@@ -76,6 +77,9 @@ public:
 
 	//敵との衝突判定
 	void OnCollision(const Enemy* enemy);
+
+	// 棘との衝突判定
+	void OnCollision(const Needle* needle);
 
 	// ゴールとの衝突判定
 	void OnCollision(const Goal* goal);

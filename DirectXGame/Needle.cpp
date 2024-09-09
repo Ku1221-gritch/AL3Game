@@ -20,30 +20,26 @@ void Needle::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 
-	// 速度を設定する
-	velocity_ = {-kWalkSpeed, 0, 0};
-
 	walkTimer_ = 0.0f;
 }
 
 void Needle::Update() {
 
-	// 移動
-	worldTransform_.translation_ += velocity_;
-
 	// タイマーを加算
 	walkTimer_ += 6.0f / 60.0f;
 
 	// 回転アニメーション
-	float param = std::cos(walkTimer_);
+	float param = std::sin(walkTimer_);
 	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
-	worldTransform_.rotation_.z = std::cos(radian);
+	worldTransform_.rotation_.y = std::sin(radian);
 
 	// 行列計算
 	worldTransform_.UpdateMatrix();
 }
 
-void Needle::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
+void Needle::Draw() { 
+	model_->Draw(worldTransform_, *viewProjection_); 
+}
 
 Vector3 Needle::GetWorldPosition() {
 	// ワールド座標を入れる変数
@@ -68,4 +64,6 @@ AABB Needle::GetAABB() {
 	return aabb;
 }
 
-void Needle::OnCollision(const Player* player) { (void)player; }
+void Needle::OnCollision(const Player* player) {
+	(void)player; 
+}

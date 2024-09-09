@@ -80,6 +80,29 @@ private: // メンバ変数
 	Model* modelNeedle_ = nullptr;
 	Needle* needle_ = nullptr;
 	std::list<Needle*> needles_;
+	intVector2 needlePos[20] = 
+	{
+	    {38, 9},
+        {39, 9},
+		{40, 8},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0}
+	};
 	//マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
