@@ -15,6 +15,7 @@ SelectScene::~SelectScene() {
 	delete mapChipField_;
 	delete modelMoveText_;
 	delete modelJumpText_;
+	delete modelBackText_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -91,13 +92,19 @@ void SelectScene::Initialize() {
 	worldTransformMoveText_.Initialize();
 	worldTransformMoveText_.scale_ = {kTextMove, kTextMove, kTextMove};
 	worldTransformMoveText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
-	worldTransformMoveText_.translation_ = (0.0f, 0.0f, 20.0f);
+	worldTransformMoveText_.translation_ = (0.0f, 0.0f, 22.0f);
 
 	modelJumpText_ = Model::CreateFromOBJ("haneru", true);
 	worldTransformJumpText_.Initialize();
 	worldTransformJumpText_.scale_ = {kTextMove, kTextMove, kTextMove};
 	worldTransformJumpText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
-	worldTransformJumpText_.translation_ = (0.0f, 0.0f, 25.0f);
+	worldTransformJumpText_.translation_ = (0.0f, 0.0f, 27.0f);
+	
+	modelBackText_ = Model::CreateFromOBJ("modoru", true);
+	worldTransformBackText_.Initialize();
+	worldTransformBackText_.scale_ = {kTextMove, kTextMove, kTextMove};
+	worldTransformBackText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformBackText_.translation_ = (0.0f, 12.0f, 7.0f);
 	
 }
 
@@ -110,11 +117,15 @@ void SelectScene::Update() {
 	counter_ = std::fmod(counter_, kTimeTextMove);
 	float angle = counter_ / kTimeTextMove * 2.0f * std::numbers::pi_v<float>;
 	//ウゴク
-	worldTransformMoveText_.translation_.x = std::sin(angle) + 15.0f;
+	worldTransformMoveText_.translation_.x = std::sin(angle) + 17.0f;
 	worldTransformMoveText_.translation_.y = 12.0f;
 	//ハネル
 	worldTransformJumpText_.UpdateMatrix();
 	worldTransformJumpText_.translation_.y = std::sin(angle) + 12.0f;
+	//モドル
+	worldTransformBackText_.UpdateMatrix();
+	worldTransformBackText_.translation_.y = 12.0f;
+	worldTransformBackText_.translation_.z = std::sin(angle);
 	
 
 	cameraController_->Update();
@@ -217,6 +228,7 @@ void SelectScene::Draw() {
 
 	modelMoveText_->Draw(worldTransformMoveText_, viewProjection_);
 	modelJumpText_->Draw(worldTransformJumpText_, viewProjection_);
+	modelBackText_->Draw(worldTransformBackText_, viewProjection_);
 
 
 	// 3Dオブジェクト描画後処理

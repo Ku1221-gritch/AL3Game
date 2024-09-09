@@ -66,6 +66,8 @@ private: // メンバ変数
 	WorldTransform worldTransformMoveText_;
 	Model* modelJumpText_ = nullptr;
 	WorldTransform worldTransformJumpText_;
+	Model* modelBackText_ = nullptr;
+	WorldTransform worldTransformBackText_;
 	// 画像
 	Sprite* sprite_ = nullptr;
 	// スカイドーム
