@@ -1,15 +1,14 @@
 #pragma once
 
+#include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "Model.h"
 #include "struct.h"
 
 class MapChipField;
 class Player;
 
-class Enemy 
-{
+class Enemy {
 public:
 /// <summary>
 /// コンストラクタ
@@ -69,7 +68,6 @@ void MapCollisionDetectionRight(CollisionMapInfo& info);
 void MapCollisionDetectionLeft(CollisionMapInfo& info);
 Vector3 CornerPosition(const Vector3& center, Corner corner);
 
-
 // 壁に接触している場合の処理
 void WallContactProcess(const CollisionMapInfo& info);
 
@@ -83,16 +81,12 @@ void MoveJudgmentResults(const CollisionMapInfo& info);
 private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
-
 	// カメラ
 	ViewProjection* viewProjection_ = nullptr;
-
 	// モデル
 	Model* model_ = nullptr;
-
 	// ワールド変換データ
 	WorldTransform worldTransform_;
-
 	// 敵の当たり判定サイズ
 	static inline const float kWidth = 1.8f;
 	static inline const float kHeight = 1.8f;

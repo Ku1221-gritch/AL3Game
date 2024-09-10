@@ -7,6 +7,7 @@
 
 class MapChipField;
 class Enemy;
+class Needle;
 class Goal;
 
 class Player
@@ -77,6 +78,12 @@ public:
 	//敵との衝突判定
 	void OnCollision(const Enemy* enemy);
 
+	// 棘との衝突判定
+	void OnCollision(const Needle* needle);
+
+	// ゴールとの衝突判定
+	void OnCollision(const Goal* goal);
+
 	//デスフラグのgetter
 	bool IsDead() const { return isDead_; }
 
@@ -129,13 +136,13 @@ public:
 	    bool isClear_ = false;
 
 		//重力加速度（下方向）
-	    static inline const float kGravityAcceleration = 0.1f;
+	    static inline const float kGravityAcceleration = 0.05f;
 
 		//最大落下速度（下方向
-	    static inline const float kLimitFallSpeed = 0.7f;
+	    static inline const float kLimitFallSpeed = 0.4f;
 
 		//ジャンプ初速（上方向）
-	    static inline const float kJumpAcceleration = 1.1f;
+	    static inline const float kJumpAcceleration = 0.8f;
 
 		static inline const float kAttenuation = 0.3f;
 

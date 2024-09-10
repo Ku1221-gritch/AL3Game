@@ -13,17 +13,24 @@ GameScene::~GameScene() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
 		}
 	}
-	worldTransformBlocks_.clear();
+	worldTransformMapChip_.clear();
 
+	//複数の敵のデリート
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
 	enemies_.clear();
+
+	//複数の棘のデリート
+	for (Needle* needle : needles_) {
+		delete needle;
+	}
+	needles_.clear();
 }
 
 // 初期化
@@ -33,8 +40,9 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	// ブロック
+	// マップチップで配置するオブジェクト
 	modelBlock_ = Model::Create();
+
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 
@@ -64,9 +72,26 @@ void GameScene::Initialize() {
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
+	//弾
+	modelBullet_ = Model::CreateFromOBJ("enemyBullet",true);
+	bullet_ = new Bullet();
+	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
+
+	// 棘の生成
+	modelNeedle_ = Model::CreateFromOBJ("needle", true);
+
+	//棘の位置
+	for (int i = 0; i < 20; ++i) {
+		Needle* newNeedle = new Needle();
+		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x,needlePos[i].y);
+		newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
+		needles_.push_back(newNeedle);
+		newNeedle->SetMapChipField(mapChipField_);
+	}
 
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 18);
+	//プレイヤーの初期位置
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -90,9 +115,8 @@ void GameScene::Initialize() {
 	cameraController_->Initialize();
 	// 追従対象をセット
 	cameraController_->SetTarget(player_);
-	// 移動範囲の制限
-	//左右下上
-	movableArea_ = {17.0f, 72.0f, 9.5f, 28.0f};
+	// カメラの範囲制限（左,右,下,上）
+	movableArea_ = {17.0f, 72.0f, 9.0f, 80.0f};
 	cameraController_->SetMoveableArea(movableArea_);
 	// リセット（瞬間合わせ）
 	cameraController_->Reset();
@@ -119,7 +143,7 @@ void GameScene::Update() {
 	case Phase::kPlay:
 		cameraController_->Update();
 		// ブロックの更新
-		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 			for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 				if (!worldTransformBlock)
 					continue;
@@ -144,6 +168,11 @@ void GameScene::Update() {
 		    enemy->Update();
 		}
 		
+
+		//棘の更新
+		for (Needle* needle : needles_) {
+			needle->Update();
+		}
 
 		// ゴールの更新
 		goal_->Update();
@@ -224,12 +253,12 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// ブロックの描画
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			if (!worldTransformBlock)
 				continue;
 
-			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
+			modelBlock_->Draw(*worldTransformBlock, viewProjection_);			
 		}
 	}
 
@@ -248,6 +277,10 @@ void GameScene::Draw() {
 	// 敵の描画処理
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
+	}
+	//棘の描画処理
+	for (Needle* needle : needles_) {
+		needle->Draw();
 	}
 	// ゴールの描画
 	goal_->Draw();
@@ -277,53 +310,72 @@ void GameScene::Draw() {
 
 void GameScene::GenerateBlocks() {
 	// 要素数
-	uint32_t kNumBlockVirtical = mapChipField_->GetNumBlockVirtical();
-	uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+	uint32_t kNumMapChipVirtical = mapChipField_->GetNumMapChipVirtical();
+	uint32_t kNumMapChipHorizontal = mapChipField_->GetNumMapChipHorizontal();
 	// 要素数を変更する
-	worldTransformBlocks_.resize(kNumBlockVirtical);
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
+	worldTransformMapChip_.resize(kNumMapChipVirtical);
+	for (uint32_t i = 0; i < kNumMapChipVirtical; ++i) {
+		worldTransformMapChip_[i].resize(kNumMapChipHorizontal);
 	}
 	// ブロックの生成
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+	for (uint32_t i = 0; i < kNumMapChipVirtical; ++i) {
+		for (uint32_t j = 0; j < kNumMapChipHorizontal; ++j) {
 			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
-				worldTransformBlocks_[i][j] = worldTransform;
-				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+				worldTransformMapChip_[i][j] = worldTransform;
+				worldTransformMapChip_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
 			}
 		}
 	}
 }
 
 void GameScene::CheckAllCollisions() {
-#pragma region 自キャラと敵キャラの当たり判定
+#pragma region プレイヤーの当たり判定
 	{
 		// 判定対象1と2の座標
-		AABB aabb1, aabb2, aabb3;
+		AABB aabb1, aabb2, aabb3, aabb4;
 
-		// 自キャラの座標
+		// プレイヤーの座標
 		aabb1 = player_->GetAABB();
 
-		// 自キャラと敵全ての当たり判定
+		// プレイヤーと敵全ての当たり判定
 		for (Enemy* enemy : enemies_) {
 			// 敵の座標
 			aabb2 = enemy->GetAABB();
+			aabb4 = bullet_->GetAABB();
 
 			// AABB同士の交差判定
 			if (IsCollision(aabb1, aabb2)) {
-				// 自キャラの衝突時コールバックを呼び出す
+				// プレイヤーの衝突時コールバックを呼び出す
 				player_->OnCollision(enemy);
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
+			//敵の弾との衝突判定
+			if (IsCollision(aabb1, aabb4)) {
+				bullet_->OnCollision(player_);
+				player_->OnCollision(enemy);
+			}
 		}
-		// ゴールの座標
+		//プレイヤーとゴールの当たり判定
 		aabb3 = goal_->GetAABB();
-		// ゴールに自キャラが触れた時
+		// ゴールにプレイヤーが触れた時
 		if (IsCollision(aabb1, aabb3)) {
+			//ゴールの衝突時コールバックを呼び出す
 			goal_->OnCollision(player_);
+		}
+		// プレイヤーと棘全ての当たり判定
+		for (Needle* needle : needles_) {
+			// プレイヤーと棘の当たり判定
+			aabb4 = needle->GetAABB();
+			// 棘にプレイヤーが触れた時
+			if (IsCollision(aabb1, aabb4)) {
+				// プレイヤーの衝突時コールバックを呼び出す
+				player_->OnCollision(needle);
+				//棘の衝突時コールバックを呼び出す
+				needle->OnCollision(player_);
+			}
 		}
 	}
 #pragma endregion
