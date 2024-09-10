@@ -114,7 +114,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow(L"GC2B_07_サトウ_クウ_10秒生き残れ！強風ピヨ!");
+	win->CreateGameWindow(L"6006_スライム・ザ・ダンジョン3D");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
