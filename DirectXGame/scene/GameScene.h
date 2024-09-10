@@ -7,6 +7,7 @@
 #include "Sprite.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Bullet.h"
 #include "Needle.h"
 #include "Skydome.h"
 #include "Goal.h"
@@ -55,6 +56,8 @@ public: // メンバ関数
 	bool IsDeathFinished() const { return deathFinished_; };
 	//クリアフラグのgetter
 	bool IsClear() const { return clearFinished_; };
+	//戻るフラグのgetter
+	bool IsBackSelect() const { return backSelect_; };
 
 private: // メンバ変数
 	//ゲームのフェーズ（型）
@@ -84,7 +87,7 @@ private: // メンバ変数
 	{
 	    {38, 9},
         {39, 9},
-		{40, 8},
+		{43, 9},
         {0, 0},
         {0, 0},
         {0, 0},
@@ -112,6 +115,9 @@ private: // メンバ変数
 	Model* modelEnemy_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemies_;
+	//弾
+	Model* modelBullet_ = nullptr;
+	Bullet* bullet_ = nullptr;
 	//ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
@@ -149,6 +155,8 @@ private: // メンバ変数
 	bool deathFinished_ = false;
 	//クリアによる終了フラグ
 	bool clearFinished_ = false;
+	//ステージ選択に戻るフラグ
+	bool backSelect_ = false;
 
 	/// <summary>
 	/// ゲームシーン用
