@@ -89,7 +89,9 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
+void Enemy::Draw() {
+	model_->Draw(worldTransform_, *viewProjection_);
+}
 
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド座標を入れる変数

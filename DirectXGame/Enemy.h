@@ -66,7 +66,6 @@ void MapCollisionDetectionRight(CollisionMapInfo& info);
 void MapCollisionDetectionLeft(CollisionMapInfo& info);
 Vector3 CornerPosition(const Vector3& center, Corner corner);
 
-
 // 壁に接触している場合の処理
 void WallContactProcess(const CollisionMapInfo& info);
 
