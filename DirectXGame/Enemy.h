@@ -41,7 +41,7 @@ void Draw();
 void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 
 //敵の動く速度
-static inline const float kWalkSpeed = 0.5f;
+static inline const float kWalkSpeed = 0.0f;
 
 //最初の角度[度]
 static inline const float kWalkMotionAngleStart = 0.05f;
@@ -68,7 +68,6 @@ void MapCollisionDetectionDown(CollisionMapInfo& info);
 void MapCollisionDetectionRight(CollisionMapInfo& info);
 void MapCollisionDetectionLeft(CollisionMapInfo& info);
 Vector3 CornerPosition(const Vector3& center, Corner corner);
-
 
 // 壁に接触している場合の処理
 void WallContactProcess(const CollisionMapInfo& info);

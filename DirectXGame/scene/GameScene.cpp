@@ -35,6 +35,7 @@ void GameScene::Initialize() {
 
 	// ブロック
 	modelBlock_ = Model::Create();
+
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 
@@ -64,6 +65,10 @@ void GameScene::Initialize() {
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
+	//弾
+	modelBullet_ = Model::CreateFromOBJ("enemyBullet",true);
+	bullet_ = new Bullet();
+	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
 
 	// 座標をマップチップ番号で指定
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 18);
@@ -225,7 +230,7 @@ void GameScene::Draw() {
 			if (!worldTransformBlock)
 				continue;
 
-			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
+			modelBlock_->Draw(*worldTransformBlock, viewProjection_);			
 		}
 	}
 
@@ -297,7 +302,7 @@ void GameScene::CheckAllCollisions() {
 #pragma region 自キャラと敵キャラの当たり判定
 	{
 		// 判定対象1と2の座標
-		AABB aabb1, aabb2, aabb3;
+		AABB aabb1, aabb2, aabb3,aabb4;
 
 		// 自キャラの座標
 		aabb1 = player_->GetAABB();
@@ -306,6 +311,7 @@ void GameScene::CheckAllCollisions() {
 		for (Enemy* enemy : enemies_) {
 			// 敵の座標
 			aabb2 = enemy->GetAABB();
+			aabb4 = bullet_->GetAABB();
 
 			// AABB同士の交差判定
 			if (IsCollision(aabb1, aabb2)) {
@@ -313,6 +319,11 @@ void GameScene::CheckAllCollisions() {
 				player_->OnCollision(enemy);
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
+			}
+			//敵の弾との衝突判定
+			if (IsCollision(aabb1, aabb4)) {
+				bullet_->OnCollision(player_);
+				player_->OnCollision(enemy);
 			}
 		}
 		// ゴールの座標
