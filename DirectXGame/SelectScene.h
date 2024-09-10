@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include "Audio.h"
 #include "CameraController.h"
@@ -100,7 +99,7 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 	// ImGuiで値を入力する変数
 	float inputFloat3[3] = {0.0f, 0.0f, 0.0f};
-	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
+	std::vector<std::vector<WorldTransform*>> worldTransformMapChip_;
 	// カメラ移動範囲
 	Rect movableArea_ = {};
 	void GenerateBlocks();
