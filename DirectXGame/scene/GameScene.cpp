@@ -42,6 +42,7 @@ void GameScene::Initialize() {
 
 	// マップチップで配置するオブジェクト
 	modelBlock_ = Model::Create();
+
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 
@@ -61,16 +62,20 @@ void GameScene::Initialize() {
 
 	//一旦敵停止
 	// 敵キャラの生成
-	//modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
+	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
 
-	//for (int32_t i = 5; i < 50; ++i) {
-	//	Enemy* newEnemy = new Enemy();
-	//	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
-	//	newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
-
-	//	enemies_.push_back(newEnemy);
-	//	newEnemy->SetMapChipField(mapChipField_);
-	//}
+	for (int32_t i = 5; i < 50; ++i) {
+		Enemy* newEnemy = new Enemy();
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
+		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
+		
+		enemies_.push_back(newEnemy);
+		newEnemy->SetMapChipField(mapChipField_);
+	}
+	//弾
+	modelBullet_ = Model::CreateFromOBJ("enemyBullet",true);
+	bullet_ = new Bullet();
+	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
@@ -154,13 +159,11 @@ void GameScene::Update() {
 		// スカイドームの更新処理
 		skydome_->Update();
 
-		// 一旦敵停止
-		// 敵キャラの更新
-		/*
+		// 敵キャラの更新		
 		for (Enemy* enemy : enemies_) {
 		    enemy->Update();
 		}
-		*/
+		
 
 		//棘の更新
 		for (Needle* needle : needles_) {
@@ -251,7 +254,7 @@ void GameScene::Draw() {
 			if (!worldTransformBlock)
 				continue;
 
-			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
+			modelBlock_->Draw(*worldTransformBlock, viewProjection_);			
 		}
 	}
 
@@ -336,6 +339,7 @@ void GameScene::CheckAllCollisions() {
 		for (Enemy* enemy : enemies_) {
 			// 敵の座標
 			aabb2 = enemy->GetAABB();
+			aabb4 = bullet_->GetAABB();
 
 			// AABB同士の交差判定
 			if (IsCollision(aabb1, aabb2)) {
@@ -343,6 +347,11 @@ void GameScene::CheckAllCollisions() {
 				player_->OnCollision(enemy);
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
+			}
+			//敵の弾との衝突判定
+			if (IsCollision(aabb1, aabb4)) {
+				bullet_->OnCollision(player_);
+				player_->OnCollision(enemy);
 			}
 		}
 		//プレイヤーとゴールの当たり判定

@@ -7,6 +7,7 @@
 #include "Sprite.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Bullet.h"
 #include "Needle.h"
 #include "Skydome.h"
 #include "Goal.h"
@@ -112,6 +113,9 @@ private: // メンバ変数
 	Model* modelEnemy_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemies_;
+	//弾
+	Model* modelBullet_ = nullptr;
+	Bullet* bullet_ = nullptr;
 	//ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
