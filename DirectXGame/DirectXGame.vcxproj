@@ -110,18 +110,21 @@
     <ClCompile Include="3d\WorldTransform.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="ClearScene.cpp" />
     <ClCompile Include="DeathParticles.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="GameOverText.cpp" />
+    <ClCompile Include="Gimics.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChipField.cpp" />
     <ClCompile Include="Needle.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
@@ -149,12 +152,14 @@
     <ClInclude Include="base\StringUtility.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="ClearScene.h" />
     <ClInclude Include="DeathParticles.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="GameOverText.h" />
+    <ClInclude Include="Gimics.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="MapChipField.h" />
@@ -166,6 +171,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="TitleScene.h" />
