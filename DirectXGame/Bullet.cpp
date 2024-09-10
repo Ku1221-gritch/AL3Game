@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include "Player.h"
 
 Bullet::Bullet() {}
 
@@ -10,7 +11,7 @@ void Bullet::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
-	velocity_ = {-20, 0};
+	velocity_ = {kSpeedLeft, 0};
 }
 
 void Bullet::Update(Vector3 position) {
@@ -18,10 +19,20 @@ void Bullet::Update(Vector3 position) {
 	BulletShot(position);
 
 	worldTransform_.translation_.x += velocity_.x;
+
+	// 回転アニメーション
+	float radian = float(std::sin(shotTimer_));
+	worldTransform_.rotation_.x = radian;
+
 	worldTransform_.UpdateMatrix();
 }
 
-void Bullet::OnCollision(const Player* player) { (void)player; }
+void Bullet::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
+
+void Bullet::OnCollision(const Player* player, Vector3 position) {
+	(void)player;
+	worldTransform_.translation_ = position;
+}
 
 Vector3 Bullet::GetWorldPosition() {
 	// ワールド座標を入れる変数
@@ -42,8 +53,7 @@ void Bullet::BulletShot(Vector3 position) {
 		isShot_ = true;
 	}
 	if (isShot_) {
-		//worldTransform_.translation_ = 
-		position;
+		worldTransform_.translation_ = position;
 		isShot_ = false;
 	}
 }

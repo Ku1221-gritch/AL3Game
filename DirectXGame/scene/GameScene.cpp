@@ -73,9 +73,10 @@ void GameScene::Initialize() {
 		newEnemy->SetMapChipField(mapChipField_);
 	}
 	//弾
+	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 18);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet",true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
+	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_);
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
@@ -169,6 +170,7 @@ void GameScene::Update() {
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
+		bullet_->Update(bulletPosition_);
 
 		// ゴールの更新
 		goal_->Update();
@@ -278,6 +280,8 @@ void GameScene::Draw() {
 	for (Needle* needle : needles_) {
 		needle->Draw();
 	}
+	//弾の描画
+	bullet_->Draw();
 	// ゴールの描画
 	goal_->Draw();
 
@@ -350,8 +354,7 @@ void GameScene::CheckAllCollisions() {
 			}
 			//敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				bullet_->OnCollision(player_);
-				player_->OnCollision(enemy);
+				player_->OnCollisionBullet();
 			}
 		}
 		//プレイヤーとゴールの当たり判定

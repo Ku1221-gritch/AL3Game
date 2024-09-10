@@ -35,7 +35,7 @@ void TitleScene::Initialize() {
 }
 
 void TitleScene::Update() {
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		finished_ = true;
 	}
 	counter_ += 1.0f / 60.0f;

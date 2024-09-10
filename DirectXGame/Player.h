@@ -77,6 +77,9 @@ public:
 
 	//敵との衝突判定
 	void OnCollision(const Enemy* enemy);
+	
+	//弾との当たり判定
+	void OnCollisionBullet();
 
 	// 棘との衝突判定
 	void OnCollision(const Needle* needle);
@@ -89,6 +92,7 @@ public:
 
 	// クリアフラグのgetter
 	bool IsClear() const { return isClear_; }
+
 
 	private:
 		//マップチップによるフィールド
@@ -132,6 +136,9 @@ public:
 		//デスフラグ
 	    bool isDead_ = false;
 
+		//弾に当たったフラグ
+	    bool isHit_ = false;
+
 		//クリアフラグ
 	    bool isClear_ = false;
 
@@ -154,4 +161,9 @@ public:
 		};
 
 		LRDirection lrDirection_ = LRDirection::kRight;
+
+		//テスト
+	    static inline const int kEscapeCountMax = 5; 
+		int escapeCount = 0;
+
 };
