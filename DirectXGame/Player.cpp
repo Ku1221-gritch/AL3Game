@@ -154,7 +154,7 @@ void Player::MovementInput() {
 	
 	// 接地状態
 	if (onGround_) {
-		if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		if (Input::GetInstance()->PushKey(DIK_UP)) {
 			// ジャンプ初速
 			velocity_ += Vector3(0, kJumpAcceleration, 0);
 		}
