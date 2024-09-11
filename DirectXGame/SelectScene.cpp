@@ -52,7 +52,7 @@ void SelectScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 44);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);

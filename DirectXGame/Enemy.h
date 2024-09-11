@@ -40,7 +40,7 @@ void Draw();
 void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 
 //敵の動く速度
-static inline const float kWalkSpeed = 0.5f;
+static inline const float kWalkSpeed = 0.1f;
 
 //最初の角度[度]
 static inline const float kWalkMotionAngleStart = 0.05f;

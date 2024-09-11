@@ -438,7 +438,7 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	// デスフラグを立てる
-	// isDead_ = true;
+	isDead_ = true;
 }
 
 //プレイヤーと棘の当たった場合の処理

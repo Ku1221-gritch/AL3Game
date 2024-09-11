@@ -79,22 +79,50 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr;
 	//ブロック
 	Model* modelBlock_ = nullptr;
+	// 敵
+	Model* modelEnemy_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
+	static inline const int kEnemyMax = 20;
+	intVector2 enemyPos[kEnemyMax] = {
+	    {0, 0},
+        {0,0},
+        {0, 0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0}
+    };
 	//棘
 	Model* modelNeedle_ = nullptr;
 	Needle* needle_ = nullptr;
 	std::list<Needle*> needles_;
-	intVector2 needlePos[20] = 
+	static inline const int kNeedlesMax = 20;
+	intVector2 needlePos[kNeedlesMax] = 
 	{
-	    {38, 9},
+	    {0, 0},
         {39, 9},
 		{43, 9},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
+        {44, 9},
+        {39, 16},
+        {37, 16},
+        {41, 16},
+        {43, 16},
+        {31, 12},
+        {32, 12},
         {0, 0},
         {0, 0},
         {0, 0},
@@ -111,10 +139,6 @@ private: // メンバ変数
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	//敵
-	Model* modelEnemy_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemies_;
 	//弾
 	Model* modelBullet_ = nullptr;
 	Bullet* bullet_ = nullptr;

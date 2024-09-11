@@ -64,30 +64,30 @@ void GameScene::Initialize() {
 	// 敵キャラの生成
 	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
 
-	for (int32_t i = 5; i < 50; ++i) {
+	for (int32_t i = 0; i < kEnemyMax; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(enemyPos[i].x, enemyPos[i].y);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
-		
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
-	//弾
-	modelBullet_ = Model::CreateFromOBJ("enemyBullet",true);
-	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
 
 	//棘の位置
-	for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i < kNeedlesMax; ++i) {
 		Needle* newNeedle = new Needle();
 		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x,needlePos[i].y);
 		newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
 		needles_.push_back(newNeedle);
 		newNeedle->SetMapChipField(mapChipField_);
 	}
+
+	// 弾
+	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
+	bullet_ = new Bullet();
+	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
 
 	// 座標をマップチップ番号で指定
 	//プレイヤーの初期位置
@@ -125,7 +125,7 @@ void GameScene::Initialize() {
 
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(42, 42);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 }
@@ -252,6 +252,17 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
+	// プレイヤーの描画処理
+	if (!player_->IsDead()) {
+		player_->Draw();
+		// 敵の描画処理
+		for (Enemy* enemy : enemies_) {
+			enemy->Draw();
+		}
+	} else if (player_->IsDead()) {
+		gameOverText_->Draw();
+	}
+
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -264,16 +275,7 @@ void GameScene::Draw() {
 
 	// スカイドームの描画処理
 	skydome_->Draw(&viewProjection_);
-	// プレイヤーの描画処理
-	if (!player_->IsDead()) {
-		player_->Draw();
-		// 敵の描画処理
-		for (Enemy* enemy : enemies_) {
-			enemy->Draw();
-		}
-	} else if (player_->IsDead()) {
-		gameOverText_->Draw();
-	}
+
 	// 敵の描画処理
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
