@@ -16,6 +16,13 @@ SelectScene::~SelectScene() {
 	delete modelMoveText_;
 	delete modelJumpText_;
 	delete modelBackText_;
+	delete modelEntrance1_;
+	delete modelEntrance2_;
+	delete modelEntrance3_;
+	delete modelStage1_;
+	delete modelStage2_;
+	delete modelStage3_;
+	delete modelEnterText_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -31,7 +38,6 @@ void SelectScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	
 	// ブロック
 	modelBlock_ = Model::Create();
 	worldTransform_.Initialize();
@@ -52,7 +58,7 @@ void SelectScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 44);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 44);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -99,34 +105,88 @@ void SelectScene::Initialize() {
 	worldTransformJumpText_.scale_ = {kTextMove, kTextMove, kTextMove};
 	worldTransformJumpText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 	worldTransformJumpText_.translation_ = (0.0f, 0.0f, 27.0f);
-	
+
 	modelBackText_ = Model::CreateFromOBJ("modoru", true);
 	worldTransformBackText_.Initialize();
 	worldTransformBackText_.scale_ = {kTextMove, kTextMove, kTextMove};
 	worldTransformBackText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 	worldTransformBackText_.translation_ = (0.0f, 12.0f, 7.0f);
 	
+	modelEnterText_ = Model::CreateFromOBJ("hairu", true);
+	worldTransformEnterText_.Initialize();
+	worldTransformEnterText_.scale_ = {kTextMove, kTextMove, kTextMove};
+	worldTransformEnterText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformEnterText_.translation_ = {45.0f, 10.0f, 2.0f};
+
+	// ステージ入るところのモデル
+	modelEntrance1_ = Model::CreateFromOBJ("entrance", true);
+	const float kEntrance = 2.5f;
+	worldTransformEntrance1_.Initialize();
+	worldTransformEntrance1_.scale_ = {kEntrance, kEntrance, kEntrance};
+	worldTransformEntrance1_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformEntrance1_.translation_ = {45.0f, 2.5f, 2.0f};
+
+	modelEntrance2_ = Model::CreateFromOBJ("entrance", true);
+	worldTransformEntrance2_.Initialize();
+	worldTransformEntrance2_.scale_ = {kEntrance, kEntrance, kEntrance};
+	worldTransformEntrance2_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformEntrance2_.translation_ = {60.0f, 2.5f, 2.0f};
+
+	modelEntrance3_ = Model::CreateFromOBJ("entrance", true);
+	worldTransformEntrance3_.Initialize();
+	worldTransformEntrance3_.scale_ = {kEntrance, kEntrance, kEntrance};
+	worldTransformEntrance3_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformEntrance3_.translation_ = {75.0f, 2.5f, 2.0f};
+
+	modelStage1_ = Model::CreateFromOBJ("stage1", true);
+	const float kStage = 2.5f;
+	worldTransformStage1_.Initialize();
+	worldTransformStage1_.scale_ = {kStage, kStage, kStage};
+	worldTransformStage1_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformStage1_.translation_ = {45.0f, 6.5f, 2.0f};
+
+	modelStage2_ = Model::CreateFromOBJ("stage2", true);
+	worldTransformStage2_.Initialize();
+	worldTransformStage2_.scale_ = {kStage, kStage, kStage};
+	worldTransformStage2_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformStage2_.translation_ = {60.0f, 6.5f, 2.0f};
+
+	modelStage3_ = Model::CreateFromOBJ("stage3", true);
+	worldTransformStage3_.Initialize();
+	worldTransformStage3_.scale_ = {kStage, kStage, kStage};
+	worldTransformStage3_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformStage3_.translation_ = {75.0f, 6.5f, 2.0f};
 }
 
 void SelectScene::Update() {
 
-	//ウゴクとハネルの移動処理
+	// ウゴクとハネルの移動処理
 	viewProjection_.TransferMatrix();
-	worldTransformMoveText_.UpdateMatrix();
 	counter_ += 1.0f / 60.0f;
 	counter_ = std::fmod(counter_, kTimeTextMove);
 	float angle = counter_ / kTimeTextMove * 2.0f * std::numbers::pi_v<float>;
-	//ウゴク
+	// ウゴク
 	worldTransformMoveText_.translation_.x = std::sin(angle) + 17.0f;
 	worldTransformMoveText_.translation_.y = 12.0f;
-	//ハネル
-	worldTransformJumpText_.UpdateMatrix();
+	worldTransformMoveText_.UpdateMatrix();
+	// ハネル
 	worldTransformJumpText_.translation_.y = std::sin(angle) + 12.0f;
-	//モドル
-	worldTransformBackText_.UpdateMatrix();
+	worldTransformJumpText_.UpdateMatrix();
+	// モドル
 	worldTransformBackText_.translation_.y = 12.0f;
 	worldTransformBackText_.translation_.z = std::sin(angle);
-	
+	worldTransformBackText_.UpdateMatrix();
+	// ハイル
+	//worldTransformBackText_.translation_.z = std::sin(angle);
+	worldTransformEnterText_.UpdateMatrix();
+
+	worldTransformEntrance1_.UpdateMatrix();
+	worldTransformEntrance2_.UpdateMatrix();
+	worldTransformEntrance3_.UpdateMatrix();
+
+	worldTransformStage1_.UpdateMatrix();
+	worldTransformStage2_.UpdateMatrix();
+	worldTransformStage3_.UpdateMatrix();
 
 	cameraController_->Update();
 
@@ -174,8 +234,8 @@ void SelectScene::Update() {
 		}
 	}
 #endif // _DEBUG
-
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		proceedStage1_ = true;
 	}
 
@@ -230,6 +290,15 @@ void SelectScene::Draw() {
 	modelJumpText_->Draw(worldTransformJumpText_, viewProjection_);
 	modelBackText_->Draw(worldTransformBackText_, viewProjection_);
 
+	modelEnterText_->Draw(worldTransformEnterText_, viewProjection_);
+
+	modelEntrance1_->Draw(worldTransformEntrance1_, viewProjection_);
+	modelEntrance2_->Draw(worldTransformEntrance2_, viewProjection_);
+	modelEntrance3_->Draw(worldTransformEntrance3_, viewProjection_);
+
+	modelStage1_->Draw(worldTransformStage1_, viewProjection_);
+	modelStage2_->Draw(worldTransformStage2_, viewProjection_);
+	modelStage3_->Draw(worldTransformStage3_, viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
