@@ -53,7 +53,7 @@ void GameScene::Initialize() {
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/firstStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化

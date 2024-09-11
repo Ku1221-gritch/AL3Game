@@ -84,6 +84,7 @@ private: // メンバ変数
 	Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemies_;
 	static inline const int kEnemyMax = 20;
+#pragma region 敵一体ずつの配置場所
 	intVector2 enemyPos[kEnemyMax] = {
 	    {0, 0},
         {0,0},
@@ -106,11 +107,13 @@ private: // メンバ変数
         {0,  0},
         {0,  0}
     };
+#pragma endregion
 	//棘
 	Model* modelNeedle_ = nullptr;
 	Needle* needle_ = nullptr;
 	std::list<Needle*> needles_;
 	static inline const int kNeedlesMax = 20;
+#pragma region 棘一つずつの配置場所
 	intVector2 needlePos[kNeedlesMax] = 
 	{
 	    {0, 0},
@@ -134,6 +137,7 @@ private: // メンバ変数
         {0, 0},
         {0, 0}
 	};
+#pragma endregion
 	//マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
