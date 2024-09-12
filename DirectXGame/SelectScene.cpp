@@ -238,6 +238,12 @@ void SelectScene::Update() {
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		proceedStage1_ = true;
 	}
+	if (Input::GetInstance()->TriggerKey(DIK_2)) {
+		proceedStage2_ = true;
+	}
+	if (Input::GetInstance()->TriggerKey(DIK_3)) {
+		proceedStage3_ = true;
+	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		backTitle_ = true;

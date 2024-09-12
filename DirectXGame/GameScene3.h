@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio.h"
+#include "Bullet.h"
 #include "CameraController.h"
 #include "DeathParticles.h"
 #include "DebugCamera.h"
@@ -12,6 +13,7 @@
 #include "Input.h"
 #include "MapChipField.h"
 #include "Model.h"
+#include "Needle.h"
 #include "Player.h"
 #include "Skydome.h"
 #include "Sprite.h"
@@ -22,18 +24,18 @@
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class SelectScene {
+class GameScene3 {
 
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
-	SelectScene();
+	GameScene3();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~SelectScene();
+	~GameScene3();
 
 	/// <summary>
 	/// 初期化
@@ -50,43 +52,26 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	//ステージ1に進む
-	bool ProceedStage1_() const { return proceedStage1_; }
-	//ステージ2に進む
-	bool ProceedStage2_() const { return proceedStage2_; }
-	//ステージ3に進む
-	bool ProceedStage3_() const { return proceedStage3_; }
-	//タイトルに戻る
-	bool IsBackTitle_() const { return backTitle_; }
+	// デスフラグのgetter
+	bool IsDeathFinished() const { return deathFinished_; };
+	// クリアフラグのgetter
+	bool IsClear() const { return clearFinished_; };
+	// 戻るフラグのgetter
+	bool IsBackSelect() const { return backSelect_; };
 
 private: // メンバ変数
+	// ゲームのフェーズ（型）
+	enum class Phase {
+		kPlay,  // ゲームプレイ
+		kDeath, // デス演出
+	};
+
+	// ゲームの現在フェーズ（変数）
+	Phase phase_;
 
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-	//操作説明のモデル
-	Model* modelMoveText_ = nullptr;
-	WorldTransform worldTransformMoveText_;
-	Model* modelJumpText_ = nullptr;
-	WorldTransform worldTransformJumpText_;
-	Model* modelBackText_ = nullptr;
-	WorldTransform worldTransformBackText_;
-	//ステージ入るところ
-	Model* modelEntrance1_ = nullptr;
-	WorldTransform worldTransformEntrance1_;
-	Model* modelEntrance2_ = nullptr;
-	WorldTransform worldTransformEntrance2_;
-	Model* modelEntrance3_ = nullptr;
-	WorldTransform worldTransformEntrance3_;
-	Model* modelStage1_ = nullptr;
-	WorldTransform worldTransformStage1_;
-	Model* modelStage2_ = nullptr;
-	WorldTransform worldTransformStage2_;
-	Model* modelStage3_ = nullptr;
-	WorldTransform worldTransformStage3_;
-	Model* modelEnterText_ = nullptr;
-	WorldTransform worldTransformEnterText_;
-	
 	// 画像
 	Sprite* sprite_ = nullptr;
 	// スカイドーム
@@ -94,18 +79,53 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr;
 	// ブロック
 	Model* modelBlock_ = nullptr;
+	// 棘
+	Model* modelNeedle_ = nullptr;
+	Needle* needle_ = nullptr;
+	std::list<Needle*> needles_;
+	intVector2 needlePos[20] = {
+	    {38, 9},
+        {39, 9},
+        {43, 9},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0},
+        {0,  0}
+    };
 	// マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	Vector3 playerPosition;
+	// 敵
+	Model* modelEnemy_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
+	// 弾
+	Model* modelBullet_ = nullptr;
+	Bullet* bullet_ = nullptr;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
 	// デスパーティクル
 	Model* modelDeathParticle_ = nullptr;
 	DeathParticles* deathParticles_ = nullptr;
+	// ゲームオーバーテキスト
+	Model* modelGameOverText_ = nullptr;
+	GameOverText* gameOverText_ = nullptr;
 	// カメラコントローラー
 	CameraController* cameraController_ = nullptr;
 	// デバッグカメラ
@@ -128,19 +148,15 @@ private: // メンバ変数
 	void CheckAllCollisions();
 	// AABB同士の交差判定
 	bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+	// フェーズの切り替え
+	void ChangePhase();
+	// 死亡による終了フラグ
+	bool deathFinished_ = false;
+	// クリアによる終了フラグ
+	bool clearFinished_ = false;
+	// ステージ選択に戻るフラグ
+	bool backSelect_ = false;
 
-	//ステージ1に進む
-	bool proceedStage1_ = false;
-	//ステージ2に進む
-	bool proceedStage2_ = false;
-	//ステージ3に進む
-	bool proceedStage3_ = false;
-	//タイトルに戻る
-	bool backTitle_ = false;
-
-	//ウゴクハネル用
-	static inline const float kTimeTextMove = 2.0f;
-	float counter_ = 0.0f;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

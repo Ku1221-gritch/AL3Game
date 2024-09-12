@@ -3,6 +3,8 @@
 #include "ClearScene.h"
 #include "DirectXCommon.h"
 #include "GameScene.h"
+#include "GameScene2.h"
+#include "GameScene3.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "SelectScene.h"
@@ -10,7 +12,9 @@
 #include "TitleScene.h"
 #include "WinApp.h"
 
-GameScene* gameScene = nullptr;
+GameScene* gameScene1 = nullptr;
+GameScene2* gameScene2 = nullptr;
+GameScene3* gameScene3 = nullptr;
 TitleScene* titleScene = nullptr;
 SelectScene* selectScene = nullptr;
 ClearScene* clearScene = nullptr;
@@ -20,7 +24,9 @@ enum class Scene {
 
 	kTitle,
 	kSelect,
-	kGame,
+	kGame1,
+	kGame2,
+	kGame3,
 	kClear,
 };
 
@@ -45,13 +51,33 @@ void ChangeScene() {
 		if (selectScene->ProceedStage1_()) {
 
 			// シーン変更
-			scene = Scene::kGame;
+			scene = Scene::kGame1;
 			// 旧シーンの解放
 			delete selectScene;
 			selectScene = nullptr;
 			// 新シーンの生成と初期化
-			gameScene = new GameScene;
-			gameScene->Initialize();
+			gameScene1 = new GameScene;
+			gameScene1->Initialize();
+		}else if (selectScene->ProceedStage2_()) {
+
+			// シーン変更
+			scene = Scene::kGame2;
+			// 旧シーンの解放
+			delete selectScene;
+			selectScene = nullptr;
+			// 新シーンの生成と初期化
+			gameScene2 = new GameScene2;
+			gameScene2->Initialize();
+		}else if (selectScene->ProceedStage3_()) {
+
+			// シーン変更
+			scene = Scene::kGame3;
+			// 旧シーンの解放
+			delete selectScene;
+			selectScene = nullptr;
+			// 新シーンの生成と初期化
+			gameScene3 = new GameScene3;
+			gameScene3->Initialize();
 		} else if (selectScene->IsBackTitle_()) {
 
 			// シーン変更
@@ -65,31 +91,91 @@ void ChangeScene() {
 		}
 		break;
 
-	case Scene::kGame:
-		if (gameScene->IsDeathFinished()) {
+	case Scene::kGame1:
+		if (gameScene1->IsDeathFinished()) {
 			// シーン変更
 			scene = Scene::kSelect;
 
-			delete gameScene;
-			gameScene = nullptr;
+			delete gameScene1;
+			gameScene1 = nullptr;
 
 			selectScene = new SelectScene;
 			selectScene->Initialize();
-		} else if (gameScene->IsClear()) {
+		} else if (gameScene1->IsClear()) {
 			// シーン変更
 			scene = Scene::kClear;
 
-			delete gameScene;
-			gameScene = nullptr;
+			delete gameScene1;
+			gameScene1 = nullptr;
 
 			clearScene = new ClearScene;
 			clearScene->Initialize();
-		} else if (gameScene->IsBackSelect()) {
+		} else if (gameScene1->IsBackSelect()) {
 			// シーン変更
 			scene = Scene::kSelect;
 
-			delete gameScene;
-			gameScene = nullptr;
+			delete gameScene1;
+			gameScene1 = nullptr;
+
+			selectScene = new SelectScene;
+			selectScene->Initialize();
+		}
+		break;
+	case Scene::kGame2:
+		if (gameScene2->IsDeathFinished()) {
+			// シーン変更
+			scene = Scene::kSelect;
+
+			delete gameScene2;
+			gameScene2 = nullptr;
+
+			selectScene = new SelectScene;
+			selectScene->Initialize();
+		} else if (gameScene2->IsClear()) {
+			// シーン変更
+			scene = Scene::kClear;
+
+			delete gameScene2;
+			gameScene2 = nullptr;
+
+			clearScene = new ClearScene;
+			clearScene->Initialize();
+		} else if (gameScene2->IsBackSelect()) {
+			// シーン変更
+			scene = Scene::kSelect;
+
+			delete gameScene2;
+			gameScene2 = nullptr;
+
+			selectScene = new SelectScene;
+			selectScene->Initialize();
+		}
+		break;
+	case Scene::kGame3:
+		if (gameScene3->IsDeathFinished()) {
+			// シーン変更
+			scene = Scene::kSelect;
+
+			delete gameScene3;
+			gameScene3 = nullptr;
+
+			selectScene = new SelectScene;
+			selectScene->Initialize();
+		} else if (gameScene3->IsClear()) {
+			// シーン変更
+			scene = Scene::kClear;
+
+			delete gameScene3;
+			gameScene3 = nullptr;
+
+			clearScene = new ClearScene;
+			clearScene->Initialize();
+		} else if (gameScene3->IsBackSelect()) {
+			// シーン変更
+			scene = Scene::kSelect;
+
+			delete gameScene3;
+			gameScene3 = nullptr;
 
 			selectScene = new SelectScene;
 			selectScene->Initialize();
@@ -119,8 +205,14 @@ void UpdateScene() {
 	case Scene::kSelect:
 		selectScene->Update();
 		break;
-	case Scene::kGame:
-		gameScene->Update();
+	case Scene::kGame1:
+		gameScene1->Update();
+		break;
+	case Scene::kGame2:
+		gameScene2->Update();
+		break;
+	case Scene::kGame3:
+		gameScene3->Update();
 		break;
 	case Scene::kClear:
 		clearScene->Update();
@@ -135,8 +227,14 @@ void DrawScene() {
 	case Scene::kSelect:
 		selectScene->Draw();
 		break;
-	case Scene::kGame:
-		gameScene->Draw();
+	case Scene::kGame1:
+		gameScene1->Draw();
+		break;
+	case Scene::kGame2:
+		gameScene2->Draw();
+		break;
+	case Scene::kGame3:
+		gameScene3->Draw();
 		break;
 	case Scene::kClear:
 		clearScene->Draw();
@@ -235,7 +333,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// 各種解放
 	delete titleScene;
-	delete gameScene;
+	delete gameScene1;
 	delete selectScene;
 	delete clearScene;
 
