@@ -111,7 +111,7 @@ void SelectScene::Initialize() {
 	worldTransformBackText_.scale_ = {kTextMove, kTextMove, kTextMove};
 	worldTransformBackText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 	worldTransformBackText_.translation_ = (0.0f, 12.0f, 7.0f);
-	
+
 	modelEnterText_ = Model::CreateFromOBJ("hairu", true);
 	worldTransformEnterText_.Initialize();
 	worldTransformEnterText_.scale_ = {kTextMove, kTextMove, kTextMove};
@@ -177,7 +177,17 @@ void SelectScene::Update() {
 	worldTransformBackText_.translation_.z = std::sin(angle);
 	worldTransformBackText_.UpdateMatrix();
 	// ハイル
-	//worldTransformBackText_.translation_.z = std::sin(angle);
+	if (playerPosition.x >= 42 && playerPosition.x <= 48) {
+		worldTransformEnterText_.translation_ = {45.0f, 10.0f, 2.0f};
+	}
+
+	if (playerPosition.x >= 57 && playerPosition.x <= 63) {
+		worldTransformEnterText_.translation_ = {60.0f, 10.0f, 2.0f};
+	}
+
+	if (playerPosition.x >= 72 && playerPosition.x <= 78) {
+		worldTransformEnterText_.translation_ = {75.0f, 10.0f, 2.0f};
+	}
 	worldTransformEnterText_.UpdateMatrix();
 
 	worldTransformEntrance1_.UpdateMatrix();
@@ -234,15 +244,25 @@ void SelectScene::Update() {
 		}
 	}
 #endif // _DEBUG
-	
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-		proceedStage1_ = true;
+
+	playerPosition = player_->GetWorldPosition();
+
+	if (playerPosition.x >= 42 && playerPosition.x <= 48) {
+		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+			proceedStage1_ = true;
+		}
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_2)) {
-		proceedStage2_ = true;
+
+	if (playerPosition.x >= 57 && playerPosition.x <= 63) {
+		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+			proceedStage2_ = true;
+		}
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_3)) {
-		proceedStage3_ = true;
+
+	if (playerPosition.x >= 72 && playerPosition.x <= 78) {
+		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+			proceedStage3_ = true;
+		}
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
@@ -296,7 +316,15 @@ void SelectScene::Draw() {
 	modelJumpText_->Draw(worldTransformJumpText_, viewProjection_);
 	modelBackText_->Draw(worldTransformBackText_, viewProjection_);
 
-	modelEnterText_->Draw(worldTransformEnterText_, viewProjection_);
+	if (playerPosition.x >= 42 && playerPosition.x <= 47) {
+		modelEnterText_->Draw(worldTransformEnterText_, viewProjection_);
+	}
+	if (playerPosition.x >= 57 && playerPosition.x <= 63) {
+		modelEnterText_->Draw(worldTransformEnterText_, viewProjection_);
+	}
+	if (playerPosition.x >= 72 && playerPosition.x <= 78) {
+		modelEnterText_->Draw(worldTransformEnterText_, viewProjection_);
+	}
 
 	modelEntrance1_->Draw(worldTransformEntrance1_, viewProjection_);
 	modelEntrance2_->Draw(worldTransformEntrance2_, viewProjection_);
