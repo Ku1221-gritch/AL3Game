@@ -20,6 +20,7 @@
 #include "DeathParticles.h"
 #include "GameOverText.h"
 #include "CameraController.h"
+#include "FadeEffect.h"
 
 /// <summary>
 /// ゲームシーン
@@ -56,6 +57,8 @@ public: // メンバ関数
 	bool IsDeathFinished() const { return deathFinished_; };
 	//クリアフラグのgetter
 	bool IsClear() const { return clearFinished_; };
+
+	FadeEffect* fade_ = nullptr;
 
 private: // メンバ変数
 	//ゲームのフェーズ（型）

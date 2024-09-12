@@ -29,7 +29,6 @@ public:
 
 	static inline const float kSpeedRight = 0.5f;
 
-
 private:
 	//モデル
 	Model* model_ = Model::CreateFromOBJ("enemyBullet", true);

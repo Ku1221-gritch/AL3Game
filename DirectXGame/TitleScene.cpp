@@ -9,6 +9,7 @@
 TitleScene::~TitleScene() {
 	delete modelTitle_;
 	delete modelPlayer_;
+	delete fade_;
 }
 
 void TitleScene::Initialize() {
@@ -32,12 +33,16 @@ void TitleScene::Initialize() {
 	worldTransformTitle_.scale_ = {kTextTitle, kTextTitle, kTextTitle};
 	worldTransformTitle_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 0.0f, {0, 0, -40},true);
 }
 
+
+
 void TitleScene::Update() {
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		finished_ = true;
-	}
+
+	fade_->Update();
+
 	counter_ += 1.0f / 60.0f;
 	counter_ = std::fmod(counter_, kTimeTitleMove);
 
@@ -63,5 +68,6 @@ void TitleScene::Draw() {
 	skydome_->Draw(&viewProjection_);
 	modelTitle_->Draw(worldTransformTitle_, viewProjection_);
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_);
+	fade_->Draw();
 	Model::PostDraw();
 }

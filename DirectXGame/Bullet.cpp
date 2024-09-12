@@ -15,7 +15,6 @@ void Bullet::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 }
 
 void Bullet::Update(Vector3 position) {
-
 	BulletShot(position);
 
 	worldTransform_.translation_.x += velocity_.x;

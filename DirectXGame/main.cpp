@@ -2,12 +2,15 @@
 #include "AxisIndicator.h"
 #include "ClearScene.h"
 #include "DirectXCommon.h"
+#include "FadeEffect.h"
 #include "GameScene.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include "TitleScene.h"
+#include "ViewProjection.h"
 #include "WinApp.h"
+#include "WorldTransform.h"
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
@@ -26,8 +29,7 @@ Scene scene = Scene::kTitle;
 void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
-		if (titleScene->IsFinished()) {
-			
+		if (titleScene->fade_->IsFadeDone()) {
 			// シーン変更
 			scene = Scene::kGame;
 			// 旧シーンの解放
@@ -48,7 +50,7 @@ void ChangeScene() {
 
 			titleScene = new TitleScene;
 			titleScene->Initialize();
-		}else if (gameScene->IsClear()) {
+		} else if (gameScene->IsClear()) {
 			// シーン変更
 			scene = Scene::kClear;
 
@@ -152,10 +154,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #pragma endregion
 
 	// ゲームシーンの初期化
-
 	scene = Scene::kTitle;
 	titleScene = new TitleScene();
 	titleScene->Initialize();
+
+
 
 	// メインループ
 	while (true) {
