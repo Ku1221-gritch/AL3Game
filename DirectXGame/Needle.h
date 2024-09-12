@@ -45,7 +45,7 @@ public:
 	// アニメーションの周期となる時間[秒]
 	static inline const float kWalkMotionTime = 0.5f;
 	// 経過時間
-	float walkTimer_ = 0.0f;
+	float timer_ = 0.0f;
 	// 速度
 	Vector3 velocity_ = {};
 	// ワールド座標を取得

@@ -10,7 +10,7 @@ GameOverText::~GameOverText() {
 
 void GameOverText::Initialize() {
 	// ゲームオーバーテキストの生成
-	model_ = Model::CreateFromOBJ("gameover", true);
+	model_ = Model::CreateFromOBJ("gameovertext", true);
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	const float kGameOverTextScale = 10.0f;

@@ -47,9 +47,9 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
-	skydome_ = new Skydome();
-	skydome_->Initialize(modelSkydome_);
+	modelSkydome_ = Model::CreateFromOBJ("stageskydome", true);
+	Skydome_ = new Skydome();
+	Skydome_->Initialize(modelSkydome_);
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
@@ -122,7 +122,6 @@ void GameScene::Initialize() {
 	cameraController_->Reset();
 	// ゲームプレイフェーズから開始
 	phase_ = Phase::kPlay;
-
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(42, 42);
@@ -161,13 +160,12 @@ void GameScene::Update() {
 		CheckAllCollisions();
 
 		// スカイドームの更新処理
-		skydome_->Update();
+		Skydome_->Update();
 
 		// 敵キャラの更新		
 		for (Enemy* enemy : enemies_) {
 		    enemy->Update();
 		}
-		
 
 		//棘の更新
 		for (Needle* needle : needles_) {
@@ -274,7 +272,7 @@ void GameScene::Draw() {
 	}
 
 	// スカイドームの描画処理
-	skydome_->Draw(&viewProjection_);
+	Skydome_->Draw(&viewProjection_);
 
 	// 敵の描画処理
 	for (Enemy* enemy : enemies_) {

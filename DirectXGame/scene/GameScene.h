@@ -76,7 +76,7 @@ private: // メンバ変数
 	Sprite* sprite_ = nullptr;
 	//スカイドーム
 	Model* modelSkydome_ = nullptr;
-	Skydome* skydome_ = nullptr;
+	Skydome* Skydome_ = nullptr;
 	//ブロック
 	Model* modelBlock_ = nullptr;
 	// 敵
