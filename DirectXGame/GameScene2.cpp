@@ -73,7 +73,7 @@ void GameScene2::Initialize() {
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
 	// 棘の位置
-	for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i < kNeedlesMax; ++i) {
 		Needle* newNeedle = new Needle();
 		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x, needlePos[i].y);
 		newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
@@ -118,7 +118,7 @@ void GameScene2::Initialize() {
 
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(3, 40);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 
@@ -286,9 +286,9 @@ void GameScene2::Draw() {
 	goal_->Draw();
 
 	// デスパーティクルの描画処理
-	if (deathParticles_) {
-		deathParticles_->Draw();
-	}
+	//if (deathParticles_) {
+	//	deathParticles_->Draw();
+	//}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

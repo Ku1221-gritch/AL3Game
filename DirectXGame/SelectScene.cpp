@@ -280,7 +280,7 @@ void SelectScene::Update() {
 		// STAGE3
 		if (playerPosition.x >= 72 && playerPosition.x <= 78) {
 			if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-				proceedStage1_ = true;
+				proceedStage3_ = true;
 				// 音楽停止
 				audio_->StopWave(voiceHandle_);
 			}

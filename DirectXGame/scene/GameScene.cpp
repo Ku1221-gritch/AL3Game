@@ -293,9 +293,9 @@ void GameScene::Draw() {
 	goal_->Draw();
 
 	// デスパーティクルの描画処理
-	if (deathParticles_) {
-		deathParticles_->Draw();
-	}
+	//if (deathParticles_) {
+	//	deathParticles_->Draw();
+	//}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
