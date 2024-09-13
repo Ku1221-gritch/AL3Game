@@ -44,7 +44,7 @@ void SelectScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	modelSkydome_ = Model::CreateFromOBJ("stageskydome", true);
 	skydome_ = new Skydome();
 	skydome_->Initialize(modelSkydome_);
 
