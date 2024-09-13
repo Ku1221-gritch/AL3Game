@@ -71,6 +71,8 @@ private: // メンバ変数
 	WorldTransform worldTransformJumpText_;
 	Model* modelBackText_ = nullptr;
 	WorldTransform worldTransformBackText_;
+	Model* modelMeltText_ = nullptr;
+	WorldTransform worldTransformMeltText_;
 	//ステージ入るところ
 	Model* modelEntrance1_ = nullptr;
 	WorldTransform worldTransformEntrance1_;

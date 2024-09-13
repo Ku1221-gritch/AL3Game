@@ -24,6 +24,7 @@ SelectScene::~SelectScene() {
 	delete modelStage2_;
 	delete modelStage3_;
 	delete modelEnterText_;
+	delete modelMeltText_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -120,6 +121,12 @@ void SelectScene::Initialize() {
 	worldTransformEnterText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 	worldTransformEnterText_.translation_ = {45.0f, 10.0f, 2.0f};
 
+	modelMeltText_ = Model::CreateFromOBJ("tokeru", true);
+	worldTransformMeltText_.Initialize();
+	worldTransformMeltText_.scale_ = {kTextMove, kTextMove, kTextMove};
+	worldTransformMeltText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformMeltText_.translation_ = {17.0f, 8.0f, 1.0f};
+
 	// ステージ入るところのモデル
 	modelEntrance1_ = Model::CreateFromOBJ("entrance", true);
 	const float kEntrance = 2.5f;
@@ -174,6 +181,9 @@ void SelectScene::Update() {
 	// ハネル
 	worldTransformJumpText_.translation_.y = std::sin(angle) + 12.0f;
 	worldTransformJumpText_.UpdateMatrix();
+	// トケル
+	worldTransformMeltText_.translation_.y = std::sin(-angle) + 6.5f;
+	worldTransformMeltText_.UpdateMatrix();
 	// モドル
 	worldTransformBackText_.translation_.y = 12.0f;
 	worldTransformBackText_.translation_.z = std::sin(angle);
@@ -317,6 +327,7 @@ void SelectScene::Draw() {
 	modelMoveText_->Draw(worldTransformMoveText_, viewProjection_);
 	modelJumpText_->Draw(worldTransformJumpText_, viewProjection_);
 	modelBackText_->Draw(worldTransformBackText_, viewProjection_);
+	modelMeltText_->Draw(worldTransformMeltText_, viewProjection_);
 
 	if (playerPosition.x >= 42 && playerPosition.x <= 47) {
 		modelEnterText_->Draw(worldTransformEnterText_, viewProjection_);
