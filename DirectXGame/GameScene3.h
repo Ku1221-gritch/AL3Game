@@ -6,6 +6,7 @@
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Enemy.h"
+#include "FadeEffect.h"
 #include "Function.h"
 #include "GameOverText.h"
 #include "Goal.h"
@@ -57,6 +58,8 @@ public: // メンバ関数
 	bool IsClear() const { return clearFinished_; };
 	// 戻るフラグのgetter
 	bool IsBackSelect() const { return backSelect_; };
+
+	FadeEffect* fade_ = nullptr;
 
 private: // メンバ変数
 	// ゲームのフェーズ（型）

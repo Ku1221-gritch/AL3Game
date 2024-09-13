@@ -82,7 +82,7 @@ void GameScene2::Initialize() {
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -119,14 +119,27 @@ void GameScene2::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+
 	// サウンドデータの読み込み
 	soundDataHandle_ = audio_->LoadWave("music/danat.wav");
 	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
 	// 音楽再生
-	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);	
+	// フェード
+	fadePos = playerPosition;
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
+	fade_->SetCircleScale();
+	fadePos.x -= 16;
 }
 
 void GameScene2::Update() {
+
+	if (!fade_->canFade_) {
+		fade_->FadeOutCircle(fadePos);
+	}
+	fade_->Update();
+
 
 	ChangePhase();
 
@@ -287,6 +300,8 @@ void GameScene2::Draw() {
 	if (deathParticles_) {
 		deathParticles_->Draw();
 	}
+
+	fade_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
