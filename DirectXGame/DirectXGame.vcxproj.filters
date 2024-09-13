@@ -21,7 +21,6 @@
     <ClCompile Include="ClearScene.cpp" />
     <ClCompile Include="DeathParticles.cpp" />
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="FadeEffect.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="GameOverText.cpp" />
     <ClCompile Include="GameScene2.cpp" />
@@ -64,7 +63,6 @@
     <ClInclude Include="ClearScene.h" />
     <ClInclude Include="DeathParticles.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="FadeEffect.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="GameOverText.h" />
     <ClInclude Include="GameScene2.h" />

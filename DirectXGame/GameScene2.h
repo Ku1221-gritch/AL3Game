@@ -7,7 +7,6 @@
 #include "DirectXCommon.h"
 #include "Enemy.h"
 #include "Function.h"
-#include "FadeEffect.h"
 #include "GameOverText.h"
 #include "Goal.h"
 #include "Input.h"
@@ -58,8 +57,6 @@ public: // メンバ関数
 	bool IsClear() const { return clearFinished_; };
 	// 戻るフラグのgetter
 	bool IsBackSelect() const { return backSelect_; };
-	//フェード
-	FadeEffect* fade_ = nullptr;
 
 private: // メンバ変数
 	// ゲームのフェーズ（型）
@@ -144,6 +141,7 @@ private: // メンバ変数
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
+	Vector3 playerPosition = 0;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;

@@ -13,7 +13,6 @@ GameScene::~GameScene() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
-	delete fade_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -123,28 +122,14 @@ void GameScene::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(43, 35);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
-	// フェード
-	Vector3 fadePos = playerPosition;
-	fadePos.y += 8;
-	fadePos.z -= 15;
-	fade_ = new FadeEffect();
-  
 	//サウンドデータの読み込み
 	soundDataHandle_ = audio_->LoadWave("music/dan.wav");
 	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
 	//音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
-
-	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
-	fade_->SetCircleScale();
 }
 
 void GameScene::Update() {
-
-	if (!fade_->canFade_) {
-		fade_->FadeOutCircle(playerPosition);
-	}
-	fade_->Update();
 
 	ChangePhase();
 
@@ -309,9 +294,6 @@ void GameScene::Draw() {
 	if (deathParticles_) {
 		deathParticles_->Draw();
 	}
-
-	// フェード
-	fade_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

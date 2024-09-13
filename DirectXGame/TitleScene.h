@@ -1,6 +1,5 @@
 #pragma once
 
-#include "FadeEffect.h"
 #include "Model.h"
 #include "Skydome.h"
 #include "ViewProjection.h"
@@ -18,8 +17,6 @@ public:
 	void Update();
 
 	void Draw();
-
-	FadeEffect* fade_ = nullptr;
 
 	bool IsFinished() const { return finished_; };
 

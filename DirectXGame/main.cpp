@@ -2,7 +2,6 @@
 #include "AxisIndicator.h"
 #include "ClearScene.h"
 #include "DirectXCommon.h"
-#include "FadeEffect.h"
 #include "GameScene.h"
 #include "GameScene2.h"
 #include "GameScene3.h"
@@ -38,7 +37,7 @@ Scene scene = Scene::kTitle;
 void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
-		if (titleScene->fade_->IsFadeDone()) {
+		if (titleScene->IsFinished()) {
 			// シーン変更
 			scene = Scene::kSelect;
 			// 旧シーンの解放

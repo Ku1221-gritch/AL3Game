@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Audio.h"
-#include "Bullet.h"
 #include "CameraController.h"
 #include "DeathParticles.h"
 #include "DebugCamera.h"
 #include "DirectXCommon.h"
 #include "Enemy.h"
-#include "FadeEffect.h"
 #include "Function.h"
 #include "GameOverText.h"
 #include "Goal.h"
@@ -59,8 +57,6 @@ public: // メンバ関数
 	bool IsClear() const { return clearFinished_; };
 	// 戻るフラグのgetter
 	bool IsBackSelect() const { return backSelect_; };
-
-	FadeEffect* fade_ = nullptr;
 
 private: // メンバ変数
 	// ゲームのフェーズ（型）
@@ -226,7 +222,7 @@ private: // メンバ変数
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-
+	Vector3 playerPosition = 0;
 	//ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;

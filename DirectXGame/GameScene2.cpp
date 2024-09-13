@@ -125,22 +125,9 @@ void GameScene2::Initialize() {
 	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);	
-	// フェード
-	fadePos = playerPosition;
-	fade_ = new FadeEffect();
-	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
-	fade_->SetCircleScale();
-	fadePos.x -= 16;
 }
 
 void GameScene2::Update() {
-
-	if (!fade_->canFade_) {
-		fade_->FadeOutCircle(fadePos);
-	}
-	fade_->Update();
-
-
 	ChangePhase();
 
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
@@ -300,8 +287,6 @@ void GameScene2::Draw() {
 	if (deathParticles_) {
 		deathParticles_->Draw();
 	}
-
-	fade_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
