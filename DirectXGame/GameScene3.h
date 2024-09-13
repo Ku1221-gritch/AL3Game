@@ -145,6 +145,7 @@ private: // メンバ変数
 	// 弾
 	Model* modelBullet_ = nullptr;
 	Bullet* bullet_ = nullptr;
+	Vector3 bulletPosition_;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;

@@ -137,14 +137,40 @@ private: // メンバ変数
         {0,  0 }
     };
 #pragma endregion
+	// 弾
+	Model* modelBullet_ = nullptr;
+	Bullet* bullet_ = nullptr;
+	std::list<Bullet*> bullets_;
+	static inline const int kBulletsMax = 30;
+#pragma region 弾一つずつの配置場所
+	intVector2 bulletPos[kBulletsMax] = {
+	    {5, 5 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 },
+        {0, 0 }
+    };
+#pragma endregion
 	// マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	// 弾
-	Model* modelBullet_ = nullptr;
-	Bullet* bullet_ = nullptr;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;

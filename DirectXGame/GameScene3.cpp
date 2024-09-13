@@ -72,10 +72,11 @@ void GameScene3::Initialize() {
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
-	// 弾
+	// 弾の位置
+	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 45);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
+	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_,bulletPosition_);
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);

@@ -77,7 +77,7 @@ void GameScene::Initialize() {
 	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 45);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_);
+	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_,bulletPosition_);
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
@@ -187,7 +187,7 @@ void GameScene::Update() {
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
-		bullet_->Update(bulletPosition_);
+		bullet_->Update();
 
 		// ゴールの更新
 		goal_->Update();
