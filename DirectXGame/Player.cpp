@@ -151,7 +151,7 @@ void Player::MovementInput() {
 		// 非入力時は移動減衰をかける
 		velocity_.x *= (1.0f - kAttenuation);
 	}
-	
+
 	// 接地状態
 	if (onGround_) {
 		if (Input::GetInstance()->PushKey(DIK_UP)) {
@@ -449,17 +449,17 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	// デスフラグを立てる
-	//isDead_ = true;
+	// isDead_ = true;
 }
 
-//プレイヤーと棘の当たった場合の処理
+// プレイヤーと棘の当たった場合の処理
 void Player::OnCollision(const Needle* needle) {
 	(void)needle;
 	// デスフラグを立てる
 	isDead_ = true;
 }
 
-void Player::OnCollisionBullet() { isHit_ = true;}
+void Player::OnCollisionBullet() { isHit_ = true; }
 
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorner] = {
