@@ -6,7 +6,7 @@ Bullet::Bullet() {}
 
 Bullet::~Bullet() {}
 
-void Bullet::Initialize(Model* model, ViewProjection* viewProjection,  Vector3& position,Vector3& shotPos) {
+void Bullet::Initialize(Model* model, ViewProjection* viewProjection, Vector3& position, Vector3& shotPos) {
 	model_ = model;
 	viewProjection_ = viewProjection;
 	// ワールド変換の初期化
@@ -18,6 +18,20 @@ void Bullet::Initialize(Model* model, ViewProjection* viewProjection,  Vector3& 
 }
 
 void Bullet::Update() {
+	//-------------
+	shotTimer_++;
+
+	if (shotTimer_ >= kIntervalTimer) {
+		shotTimer_ = 0;
+		isShot_ = true;
+	}
+	if (isShot_) {
+		worldTransform_.translation_ = shotPos_;
+		isShot_ = false;
+	}
+	//-------------
+
+	worldTransform_.translation_.x += velocity_.x;
 
 	// 回転アニメーション
 	float radian = float(std::sin(shotTimer_));
@@ -41,7 +55,6 @@ void Bullet::OnCollision(const Player* player, Vector3 position) {
 	(void)player;
 	worldTransform_.translation_ = position;
 }
-
 
 AABB Bullet::GetAABB() {
 	Vector3 worldPos = GetWorldPosition();

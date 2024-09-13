@@ -4,6 +4,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+enum FadeMode { kSquare, kCircle };
+
 class FadeEffect {
 
 public:
@@ -11,7 +13,7 @@ public:
 
 	~FadeEffect();
 
-	void Initialize(ViewProjection* viewProjection, float alpha, Vector3 position, bool onOff);
+	void Initialize(ViewProjection* viewProjection, float squareAlpha, float circleAlpha, Vector3 position, bool onOff, FadeMode mode);
 
 	void Update();
 
@@ -21,26 +23,49 @@ public:
 
 	void FadeOut();
 
+	void FadeUp();
+
+	void FadeInCircle(Vector3 position);
+
+	void FadeOutCircle(Vector3 position);
+
 	bool IsFinished() const { return fadeStart_; };
 
 	bool IsFadeDone() const { return isFadeDone_; };
 
+	// フェードの許可
+	bool canFade_ = false;
+
+	FadeMode fadeMode_ = FadeMode::kSquare;
+
+	float GetAlpha() const { return squareAlpha_; };
+
+	void SetCircleScale() {
+		worldTransformCircle_.scale_.x = 400;
+		worldTransformCircle_.scale_.y = 400;
+	};
+
 private:
 	ViewProjection* viewProjection_;
-	WorldTransform worldTransformFade_;
-	Model* modelFade_ = nullptr;
+	WorldTransform worldTransformSquare_;
+	WorldTransform worldTransformCircle_;
+	Model* modelSquare_ = nullptr;
+	Model* modelCircle_ = nullptr;
+
 	// アルファ値
-	float alpha_;
+	float squareAlpha_;
+	float circleAlpha_;
 	// フェード速度
 	float alphaValue_;
 	// 色
-	ObjectColor* color_ = nullptr;
+	ObjectColor* squareColor_ = nullptr;
+	ObjectColor* circleColor_ = nullptr;
 
 	// フェードが完了しているかどうか
 	bool isFadeDone_ = false;
-	//フェードの開始
+	// フェードの開始
 	bool fadeStart_ = false;
-	//フェードの許可
-	bool canFade_ = false;
 
+	// フェードスケール
+	Vector3 fadeScale_;
 };

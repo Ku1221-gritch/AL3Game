@@ -44,17 +44,23 @@ void TitleScene::Initialize() {
 	soundDataHandle_ = audio_->LoadWave("music/MECHANICAL_DEATH.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+	fade_->Initialize(&viewProjection_, 0.0f, 0.0f, {0, 0, -40}, false,kSquare);
 }
 
 
 
 void TitleScene::Update() {
-	fade_->Update();
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
-		finished_ = true;
+
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		fade_->canFade_ = true;
 		// 音楽停止
 		audio_->StopWave(voiceHandle_);
 	}
+	if (fade_->canFade_) {
+		fade_->Update();
+		fade_->FadeIn();
+	}
+  
 	counter_ += 1.0f / 60.0f;
 	counter_ = std::fmod(counter_, kTimeTitleMove);
 

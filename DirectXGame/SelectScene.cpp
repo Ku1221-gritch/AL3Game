@@ -160,9 +160,19 @@ void SelectScene::Initialize() {
 	soundDataHandle_ = audio_->LoadWave("music/DIGGER_LIFE.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+	// フェード
+	Vector3 fadePos = playerPosition;
+	fadePos.y += 8;
+	fadePos.z -= 15;
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kSquare);
 }
 
 void SelectScene::Update() {
+	if (!fade_->canFade_) {
+		fade_->FadeOut();
+	}
+	fade_->Update();
 
 	// ウゴクとハネルの移動処理
 	viewProjection_.TransferMatrix();
@@ -183,13 +193,9 @@ void SelectScene::Update() {
 	// ハイル
 	if (playerPosition.x >= 42 && playerPosition.x <= 48) {
 		worldTransformEnterText_.translation_ = {45.0f, 10.0f, 2.0f};
-	}
-
-	if (playerPosition.x >= 57 && playerPosition.x <= 63) {
+	} else if (playerPosition.x >= 57 && playerPosition.x <= 63) {
 		worldTransformEnterText_.translation_ = {60.0f, 10.0f, 2.0f};
-	}
-
-	if (playerPosition.x >= 72 && playerPosition.x <= 78) {
+	} else if (playerPosition.x >= 72 && playerPosition.x <= 78) {
 		worldTransformEnterText_.translation_ = {75.0f, 10.0f, 2.0f};
 	}
 	worldTransformEnterText_.UpdateMatrix();
@@ -251,27 +257,48 @@ void SelectScene::Update() {
 
 	playerPosition = player_->GetWorldPosition();
 
-	if (playerPosition.x >= 42 && playerPosition.x <= 48) {
-		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-			proceedStage1_ = true;
-			// 音楽停止
-			audio_->StopWave(voiceHandle_);
-		}
-	}
 
-	if (playerPosition.x >= 57 && playerPosition.x <= 63) {
-		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-			proceedStage2_ = true;
+	if (playerPosition.x >= 42 && playerPosition.x <= 78) {
+		// STAGE1
+		if (playerPosition.x >= 42 && playerPosition.x <= 48) {
+			if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+				fade_->canFade_ = true;
+				fade_->fadeMode_ = kCircle;
 			// 音楽停止
 			audio_->StopWave(voiceHandle_);
+			}
+			if (fade_->IsFadeDone()) {
+				proceedStage1_ = true;
+			}
 		}
-	}
+		// STAGE2
+		if (playerPosition.x >= 57 && playerPosition.x <= 63) {
+			if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+				fade_->canFade_ = true;
+				fade_->fadeMode_ = kCircle;
+			}
+			if (fade_->IsFadeDone()) {
+				proceedStage2_ = true;
+			}
+		}
+		// STAGE3
+		if (playerPosition.x >= 72 && playerPosition.x <= 78) {
+			if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+				fade_->canFade_ = true;
+				fade_->fadeMode_ = kCircle;
+			}
+			if (fade_->IsFadeDone()) {
+				proceedStage1_ = true;
+			}
+		}
 
 	if (playerPosition.x >= 72 && playerPosition.x <= 78) {
 		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 			proceedStage3_ = true;
 			// 音楽停止
 			audio_->StopWave(voiceHandle_);
+		if (fade_->canFade_) {
+			fade_->FadeInCircle(playerPosition);
 		}
 	}
 
@@ -343,6 +370,8 @@ void SelectScene::Draw() {
 	modelStage1_->Draw(worldTransformStage1_, viewProjection_);
 	modelStage2_->Draw(worldTransformStage2_, viewProjection_);
 	modelStage3_->Draw(worldTransformStage3_, viewProjection_);
+
+	fade_->Draw();
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

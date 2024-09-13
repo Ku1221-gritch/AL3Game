@@ -15,6 +15,7 @@ public:
 	~Bullet();
 
 	void Initialize(Model* model, ViewProjection* viewProjection, Vector3& position, Vector3& shotPos);
+
 	void Update();
 	void Draw();
 	void OnCollision(const Player* player, Vector3 position);

@@ -134,6 +134,13 @@ void GameScene3::Initialize() {
 	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+
+	Vector3 fadePos = playerPosition;
+	fadePos.y += 8;
+	fadePos.z -= 15;
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
+	fade_->SetCircleScale();
 }
 
 void GameScene3::Update() {
@@ -362,7 +369,6 @@ void GameScene3::CheckAllCollisions() {
 			}
 			// 敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				//bullet_->OnCollision(player_);
 				player_->OnCollision(enemy);
 			}
 		}
