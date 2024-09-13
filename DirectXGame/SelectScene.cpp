@@ -10,6 +10,7 @@ SelectScene::~SelectScene() {
 	delete modelSkydome_;
 	delete debugCamera_;
 	delete modelPlayer_;
+	delete modelMeltPlayer_;
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
@@ -23,6 +24,7 @@ SelectScene::~SelectScene() {
 	delete modelStage2_;
 	delete modelStage3_;
 	delete modelEnterText_;
+	delete modelMeltText_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -62,9 +64,10 @@ void SelectScene::Initialize() {
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	modelMeltPlayer_ = Model::CreateFromOBJ("meltPlayer", true);
 	player_ = new Player();
 	// 自キャラの初期化
-	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
+	player_->Initialize(modelPlayer_,modelMeltPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
 	// デスパーティクルの生成
@@ -117,6 +120,12 @@ void SelectScene::Initialize() {
 	worldTransformEnterText_.scale_ = {kTextMove, kTextMove, kTextMove};
 	worldTransformEnterText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 	worldTransformEnterText_.translation_ = {45.0f, 10.0f, 2.0f};
+
+	modelMeltText_ = Model::CreateFromOBJ("tokeru", true);
+	worldTransformMeltText_.Initialize();
+	worldTransformMeltText_.scale_ = {kTextMove, kTextMove, kTextMove};
+	worldTransformMeltText_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformMeltText_.translation_ = {17.0f, 8.0f, 1.0f};
 
 	// ステージ入るところのモデル
 	modelEntrance1_ = Model::CreateFromOBJ("entrance", true);
@@ -176,6 +185,9 @@ void SelectScene::Update() {
 	// ハネル
 	worldTransformJumpText_.translation_.y = std::sin(angle) + 12.0f;
 	worldTransformJumpText_.UpdateMatrix();
+	// トケル
+	worldTransformMeltText_.translation_.y = std::sin(-angle) + 6.5f;
+	worldTransformMeltText_.UpdateMatrix();
 	// モドル
 	worldTransformBackText_.translation_.y = 12.0f;
 	worldTransformBackText_.translation_.z = std::sin(angle);
@@ -325,6 +337,7 @@ void SelectScene::Draw() {
 	modelMoveText_->Draw(worldTransformMoveText_, viewProjection_);
 	modelJumpText_->Draw(worldTransformJumpText_, viewProjection_);
 	modelBackText_->Draw(worldTransformBackText_, viewProjection_);
+	modelMeltText_->Draw(worldTransformMeltText_, viewProjection_);
 
 	if (playerPosition.x >= 42 && playerPosition.x <= 47) {
 		modelEnterText_->Draw(worldTransformEnterText_, viewProjection_);

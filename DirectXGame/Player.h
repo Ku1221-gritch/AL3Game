@@ -27,7 +27,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(Model* model,Model* model2, ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -92,6 +92,11 @@ public:
 	// クリアフラグのgetter
 	bool IsClear() const { return isClear_; }
 
+	bool isHit_ = false;
+
+	// デスフラグ
+	bool isDead_ = false;
+
 private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
@@ -102,6 +107,7 @@ private:
 
 	// モデル
 	Model* model_ = nullptr;
+	Model* meltPlayer_ = nullptr;
 
 	Vector3 velocity_ = {};
 
@@ -131,11 +137,10 @@ private:
 	// 接地状態フラグ
 	bool onGround_ = true;
 
-	// デスフラグ
-	bool isDead_ = false;
+	
 
 	// 弾に当たったフラグ
-	bool isHit_ = false;
+	
 
 	// クリアフラグ
 	bool isClear_ = false;

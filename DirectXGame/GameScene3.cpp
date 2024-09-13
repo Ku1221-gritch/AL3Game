@@ -10,9 +10,11 @@ GameScene3::~GameScene3() {
 	delete modelSkydome_;
 	delete debugCamera_;
 	delete modelPlayer_;
+	delete modelMeltPlayer_;
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
+	delete modelF_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -87,13 +89,14 @@ void GameScene3::Initialize() {
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(10, 4);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	modelMeltPlayer_ = Model::CreateFromOBJ("meltPlayer", true);
 	player_ = new Player();
 	// 自キャラの初期化
-	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
+	player_->Initialize(modelPlayer_,modelMeltPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
 	// デスパーティクルの生成
@@ -121,7 +124,7 @@ void GameScene3::Initialize() {
 
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(41, 30);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 	// サウンドデータの読み込み
@@ -129,9 +132,12 @@ void GameScene3::Initialize() {
 	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+
 }
 
 void GameScene3::Update() {
+
+
 
 	ChangePhase();
 
@@ -195,6 +201,11 @@ void GameScene3::Update() {
 			viewProjection_.TransferMatrix();
 		}
 
+		if (playerPosition.y <= 10) {
+			//phase_ = Phase::kDeath;
+			player_->isDead_ = true;
+		}
+
 		break;
 	case Phase::kDeath:
 
@@ -203,7 +214,6 @@ void GameScene3::Update() {
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();
 		}
-
 		gameOverText_->Update();
 
 #ifdef _DEBUG
@@ -283,8 +293,17 @@ void GameScene3::Draw() {
 	for (Needle* needle : needles_) {
 		needle->Draw();
 	}
+
+	// 弾の描画
+	bullet_->Draw();
+
 	// ゴールの描画
 	goal_->Draw();
+
+	// F
+	if (player_->isHit_) {
+		modelF_->Draw(worldTransformF_, viewProjection_);
+	}
 
 	// デスパーティクルの描画処理
 	if (deathParticles_) {
@@ -352,6 +371,7 @@ void GameScene3::CheckAllCollisions() {
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
+
 		}
 		// プレイヤーとゴールの当たり判定
 		aabb3 = goal_->GetAABB();

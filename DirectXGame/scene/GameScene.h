@@ -219,8 +219,14 @@ private: // メンバ変数
 #pragma endregion
 	// マップチップフィールド
 	MapChipField* mapChipField_;
+	//F
+	Model* modelF_ = nullptr;
+	WorldTransform worldTransformF_;
+	static inline const float kTimeTextMove = 0.1f;
+	float counter_ = 0.0f;
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
+	Model* modelMeltPlayer_ = nullptr;
 	Player* player_ = nullptr;
 	Vector3 playerPosition = 0;
 	//ゴール

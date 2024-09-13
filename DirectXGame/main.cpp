@@ -298,8 +298,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	titleScene = new TitleScene();
 	titleScene->Initialize();
 
-
-
 	// メインループ
 	while (true) {
 		// メッセージ処理
@@ -337,6 +335,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	delete titleScene;
 	delete gameScene1;
+	delete gameScene2;
+	delete gameScene3;
 	delete selectScene;
 	delete clearScene;
 

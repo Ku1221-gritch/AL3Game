@@ -140,8 +140,16 @@ private: // メンバ変数
 	MapChipField* mapChipField_;
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
+	Model* modelMeltPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	Vector3 playerPosition = 0;
+	Vector3 playerPosition;
+	// 敵
+	Model* modelEnemy_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
+	// 弾
+	Model* modelBullet_ = nullptr;
+	Bullet* bullet_ = nullptr;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
@@ -185,8 +193,6 @@ private: // メンバ変数
 	bool clearFinished_ = false;
 	// ステージ選択に戻るフラグ
 	bool backSelect_ = false;
-
-	Vector3 fadePos;
 
 	/// <summary>
 	/// ゲームシーン用
