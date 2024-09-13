@@ -10,6 +10,7 @@ GameScene::~GameScene() {
 	delete modelSkydome_;
 	delete debugCamera_;
 	delete modelPlayer_;
+	delete modelMeltPlayer_;
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
@@ -102,9 +103,10 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
+	modelMeltPlayer_ = Model::CreateFromOBJ("meltPlayer", true);
 	player_ = new Player();
 	// 自キャラの初期化
-	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
+	player_->Initialize(modelPlayer_,modelMeltPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
 
 	// デスパーティクルの生成
@@ -375,9 +377,13 @@ void GameScene::CheckAllCollisions() {
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
-			// 敵の弾との衝突判定
-			if (IsCollision(aabb1, aabb4)) {
-				player_->OnCollisionBullet();
+
+			if (!Input::GetInstance()->PushKey(DIK_DOWN)) {
+
+				// 敵の弾との衝突判定
+				if (IsCollision(aabb1, aabb4)) {
+					player_->OnCollisionBullet();
+				}
 			}
 		}
 		// プレイヤーとゴールの当たり判定

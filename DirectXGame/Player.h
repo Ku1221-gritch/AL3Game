@@ -27,7 +27,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialize(Model* model,Model* model2, ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -102,6 +102,7 @@ private:
 
 	// モデル
 	Model* model_ = nullptr;
+	Model* meltPlayer_ = nullptr;
 
 	Vector3 velocity_ = {};
 

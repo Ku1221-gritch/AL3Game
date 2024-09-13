@@ -145,6 +145,7 @@ private: // メンバ変数
 	MapChipField* mapChipField_;
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
+	Model* modelMeltPlayer_ = nullptr;
 	Player* player_ = nullptr;
 	//弾
 	Model* modelBullet_ = nullptr;
