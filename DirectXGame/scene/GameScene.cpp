@@ -364,22 +364,20 @@ void GameScene::CheckAllCollisions() {
 		// プレイヤーの座標
 		aabb1 = player_->GetAABB();
 
-		// プレイヤーと敵全ての当たり判定
-		for (Enemy* enemy : enemies_) {
-			// 敵の座標
-			aabb2 = enemy->GetAABB();
-			aabb4 = bullet_->GetAABB();
+		if (!Input::GetInstance()->PushKey(DIK_DOWN)) {
+			// プレイヤーと敵全ての当たり判定
+			for (Enemy* enemy : enemies_) {
+				// 敵の座標
+				aabb2 = enemy->GetAABB();
+				aabb4 = bullet_->GetAABB();
 
-			// AABB同士の交差判定
-			if (IsCollision(aabb1, aabb2)) {
-				// プレイヤーの衝突時コールバックを呼び出す
-				player_->OnCollision(enemy);
-				// 敵の衝突時コールバックを呼び出す
-				enemy->OnCollision(player_);
-			}
-
-			if (!Input::GetInstance()->PushKey(DIK_DOWN)) {
-
+				// AABB同士の交差判定
+				if (IsCollision(aabb1, aabb2)) {
+					// プレイヤーの衝突時コールバックを呼び出す
+					player_->OnCollision(enemy);
+					// 敵の衝突時コールバックを呼び出す
+					enemy->OnCollision(player_);
+				}
 				// 敵の弾との衝突判定
 				if (IsCollision(aabb1, aabb4)) {
 					player_->OnCollisionBullet();
