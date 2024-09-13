@@ -94,6 +94,9 @@ public:
 
 	bool isHit_ = false;
 
+	// デスフラグ
+	bool isDead_ = false;
+
 private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
@@ -134,8 +137,7 @@ private:
 	// 接地状態フラグ
 	bool onGround_ = true;
 
-	// デスフラグ
-	bool isDead_ = false;
+	
 
 	// 弾に当たったフラグ
 	

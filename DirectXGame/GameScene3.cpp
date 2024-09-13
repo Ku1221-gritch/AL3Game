@@ -55,7 +55,7 @@ void GameScene3::Initialize() {
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/firstStage.csv");
+	mapChipField_->LoadMapChipCsv("Resources/thirdStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -66,19 +66,20 @@ void GameScene3::Initialize() {
 	//  敵キャラの生成
 	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
 
-	for (int32_t i = 5; i < 50; ++i) {
+	for (int32_t i = 0; i < 20; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(enemyPos[i].x, enemyPos[i].y);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
 	// 弾
+	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(45, 14);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
-
+	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_);
+	
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
 
@@ -93,7 +94,7 @@ void GameScene3::Initialize() {
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(10, 4);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -128,7 +129,7 @@ void GameScene3::Initialize() {
 
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(41, 30);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 
@@ -194,6 +195,8 @@ void GameScene3::Update() {
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
+		//弾の更新
+		bullet_->Update(bulletPosition_);
 
 		// ゴールの更新
 		goal_->Update();
@@ -215,6 +218,11 @@ void GameScene3::Update() {
 			viewProjection_.TransferMatrix();
 		}
 
+		if (playerPosition.y <= 10) {
+			//phase_ = Phase::kDeath;
+			player_->isDead_ = true;
+		}
+
 		break;
 	case Phase::kDeath:
 
@@ -223,7 +231,6 @@ void GameScene3::Update() {
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();
 		}
-
 		gameOverText_->Update();
 
 #ifdef _DEBUG
@@ -303,6 +310,10 @@ void GameScene3::Draw() {
 	for (Needle* needle : needles_) {
 		needle->Draw();
 	}
+
+	// 弾の描画
+	bullet_->Draw();
+
 	// ゴールの描画
 	goal_->Draw();
 

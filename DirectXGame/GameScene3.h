@@ -84,27 +84,27 @@ private: // メンバ変数
 	Needle* needle_ = nullptr;
 	std::list<Needle*> needles_;
 	intVector2 needlePos[20] = {
-	    {38, 9},
-        {39, 9},
-        {43, 9},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0}
-    };
+	    {23,  9},
+        {36,  9},
+        {43,  9},
+        {14,  9},
+        {35,  4},
+        {20,  4},
+        {8,  14},
+        {23, 14},
+        {36, 14},
+        {15, 14},
+        {14, 14},
+        {7,  19},
+        {15, 19},
+        {23, 19},
+        {36, 19},
+        {36, 19},
+        {0,   0},
+        {21, 24},
+        {27, 29},
+        {32, 27},
+	};
 	// マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
@@ -122,9 +122,35 @@ private: // メンバ変数
 	Model* modelEnemy_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemies_;
+	static inline const int kEnemyMax = 20;
+#pragma region 敵一体ずつの配置場所
+	intVector2 enemyPos[kEnemyMax] = {
+	    {3, 4},
+        {2, 4},
+        {1, 4},
+        {35, 4},
+        {43, 1},
+        {0, 0},
+        {25, 9},
+        {0, 0},
+        {15, 14},
+        {30, 14},
+        {34, 4},
+        {33, 4},
+        {37, 9},
+        {0, 0},
+        {37, 4},
+        {39, 4},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0}
+    };
+#pragma endregion
 	// 弾
 	Model* modelBullet_ = nullptr;
 	Bullet* bullet_ = nullptr;
+	Vector3 bulletPosition_;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
