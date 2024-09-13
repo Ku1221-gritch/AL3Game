@@ -47,13 +47,13 @@ void GameScene2::Initialize() {
 	viewProjection_.Initialize();
 
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	modelSkydome_ = Model::CreateFromOBJ("stageskydome", true);
 	skydome_ = new Skydome();
 	skydome_->Initialize(modelSkydome_);
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/firstStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -353,7 +353,6 @@ void GameScene2::CheckAllCollisions() {
 			}
 			// 敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				bullet_->OnCollision(player_);
 				player_->OnCollision(enemy);
 			}
 		}
