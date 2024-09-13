@@ -31,6 +31,7 @@ GameScene3::~GameScene3() {
 		delete needle;
 	}
 	needles_.clear();
+
 }
 
 // 初期化
@@ -63,12 +64,11 @@ void GameScene3::Initialize() {
 	// 一旦敵停止
 	//  敵キャラの生成
 	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
-
-	for (int32_t i = 5; i < 50; ++i) {
+	// 敵の位置
+	for (int32_t i = 0; i < kEnemyMax; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(enemyPos[i].x, enemyPos[i].y);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
-
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}

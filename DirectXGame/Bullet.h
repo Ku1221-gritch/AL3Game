@@ -19,7 +19,7 @@ public:
 	void Draw();
 	void OnCollision(const Player* player, Vector3 position);
 
-	Vector3 GetWorldPosition() const { return worldTransform_.translation_; };
+	Vector3 GetWorldPosition() ;
 
 	// AABBを取得
 	AABB GetAABB();

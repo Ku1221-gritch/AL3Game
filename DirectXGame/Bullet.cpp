@@ -30,6 +30,7 @@ void Bullet::Update() {
 	}
 	if (isShot_) {
 		worldTransform_.translation_ = shotPos_;
+		shotPos_ += velocity_;
 		isShot_ = false;
 	}
 	worldTransform_.UpdateMatrix();
@@ -40,6 +41,17 @@ void Bullet::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 void Bullet::OnCollision(const Player* player, Vector3 position) {
 	(void)player;
 	worldTransform_.translation_ = position;
+}
+
+Vector3 Bullet::GetWorldPosition() {
+	// ワールド座標を入れる変数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得（ワールド座標）
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return worldPos;
 }
 
 
