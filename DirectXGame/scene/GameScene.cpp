@@ -72,12 +72,6 @@ void GameScene::Initialize() {
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
-	// 弾
-	//弾の位置
-	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 45);
-	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
-	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_,bulletPosition_);
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
@@ -187,7 +181,6 @@ void GameScene::Update() {
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
-		bullet_->Update();
 
 		// ゴールの更新
 		goal_->Update();
@@ -303,8 +296,6 @@ void GameScene::Draw() {
 	for (Needle* needle : needles_) {
 		needle->Draw();
 	}
-	// 弾の描画
-	bullet_->Draw();
 	// ゴールの描画
 	goal_->Draw();
 
@@ -370,7 +361,6 @@ void GameScene::CheckAllCollisions() {
 		for (Enemy* enemy : enemies_) {
 			// 敵の座標
 			aabb2 = enemy->GetAABB();
-			aabb4 = bullet_->GetAABB();
 
 			// AABB同士の交差判定
 			if (IsCollision(aabb1, aabb2)) {
@@ -378,10 +368,6 @@ void GameScene::CheckAllCollisions() {
 				player_->OnCollision(enemy);
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
-			}
-			// 敵の弾との衝突判定
-			if (IsCollision(aabb1, aabb4)) {
-				player_->OnCollisionBullet();
 			}
 		}
 		// プレイヤーとゴールの当たり判定

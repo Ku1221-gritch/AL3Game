@@ -7,7 +7,6 @@
 #include "Sprite.h"
 #include "Player.h"
 #include "Enemy.h"
-#include "Bullet.h"
 #include "Needle.h"
 #include "Skydome.h"
 #include "Goal.h"
@@ -226,10 +225,6 @@ private: // メンバ変数
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	//弾
-	Model* modelBullet_ = nullptr;
-	Bullet* bullet_ = nullptr;
-	Vector3 bulletPosition_;
 	//ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Audio.h"
-#include "Bullet.h"
 #include "CameraController.h"
 #include "DeathParticles.h"
 #include "DebugCamera.h"
@@ -142,10 +141,6 @@ private: // メンバ変数
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	// 弾
-	Model* modelBullet_ = nullptr;
-	Bullet* bullet_ = nullptr;
-	Vector3 bulletPosition_;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
