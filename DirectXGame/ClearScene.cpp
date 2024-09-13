@@ -38,7 +38,7 @@ void ClearScene::Initialize() {
 }
 
 void ClearScene::Update() {
-	if (Input::GetInstance()->PushKey(DIK_RETURN)) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		finished_ = true;
 	}
 	counter_ += 1.0f / 60.0f;

@@ -1,9 +1,12 @@
 #pragma once
 
+#include "FadeEffect.h"
 #include "Model.h"
+#include "Skydome.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include"Skydome.h"
+
+class FadeEffect;
 
 class TitleScene {
 public:
@@ -15,8 +18,7 @@ public:
 
 	void Draw();
 
-	bool IsFinished() const { return finished_; };
-
+	FadeEffect* fade_ = nullptr;
 
 private:
 	static inline const float kTimeTitleMove = 2.0f;
@@ -34,5 +36,5 @@ private:
 	Skydome* Skydome_ = nullptr;
 
 	float counter_ = 0.0f;
-	bool finished_ = false;
+
 };
