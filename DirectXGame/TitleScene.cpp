@@ -41,7 +41,7 @@ void TitleScene::Initialize() {
 	fade_ = new FadeEffect();
 	fade_->Initialize(&viewProjection_, 0.0f, { 0, 0, -40 }, true);
 	// サウンドデータの読み込み
-	soundDataHandle_ = audio_->LoadWave("music/se.wav");
+	soundDataHandle_ = audio_->LoadWave("music/MECHANICAL_DEATH.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }

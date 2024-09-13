@@ -50,7 +50,7 @@ void SelectScene::Initialize() {
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/selectBlocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/map/selectStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -156,6 +156,10 @@ void SelectScene::Initialize() {
 	worldTransformStage3_.scale_ = {kStage, kStage, kStage};
 	worldTransformStage3_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
 	worldTransformStage3_.translation_ = {75.0f, 6.5f, 2.0f};
+	// サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("music/DIGGER_LIFE.wav");
+	// 音楽再生
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
 void SelectScene::Update() {
@@ -250,18 +254,24 @@ void SelectScene::Update() {
 	if (playerPosition.x >= 42 && playerPosition.x <= 48) {
 		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 			proceedStage1_ = true;
+			// 音楽停止
+			audio_->StopWave(voiceHandle_);
 		}
 	}
 
 	if (playerPosition.x >= 57 && playerPosition.x <= 63) {
 		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 			proceedStage2_ = true;
+			// 音楽停止
+			audio_->StopWave(voiceHandle_);
 		}
 	}
 
 	if (playerPosition.x >= 72 && playerPosition.x <= 78) {
 		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 			proceedStage3_ = true;
+			// 音楽停止
+			audio_->StopWave(voiceHandle_);
 		}
 	}
 

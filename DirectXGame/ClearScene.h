@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio.h"
 #include "Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
@@ -31,6 +32,12 @@ private:
 	// スカイドーム
 	Model* modelSkydome_ = nullptr;
 	Skydome* skydome_ = nullptr;
+	
+	Audio* audio_ = nullptr;
+	// 音楽データ
+	uint32_t soundDataHandle_ = 0;
+	// 音声再生ハンドル
+	uint32_t voiceHandle_ = 0;
 
 	float counter_ = 0.0f;
 	bool finished_ = false;

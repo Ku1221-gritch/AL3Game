@@ -54,7 +54,7 @@ void GameScene::Initialize() {
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/firstStage.csv");
+	mapChipField_->LoadMapChipCsv("Resources/map/firstStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -141,7 +141,7 @@ void GameScene::Initialize() {
 	fade_ = new FadeEffect();
 	fade_->Initialize(&viewProjection_, 1.3f, fadePos, false);
 	//サウンドデータの読み込み
-	soundDataHandle_ = audio_->LoadWave("music/op.wav");
+	soundDataHandle_ = audio_->LoadWave("music/dan.wav");
 	//音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
@@ -154,6 +154,7 @@ void GameScene::Update() {
 
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		backSelect_ = true;
+		audio_->StopWave(voiceHandle_);
 	}
 
 	switch (phase_) {
@@ -196,6 +197,9 @@ void GameScene::Update() {
 		goal_->Update();
 		if (goal_->isGoal()) {
 			clearFinished_ = true;
+		}
+		if (clearFinished_) {
+			audio_->StopWave(voiceHandle_);
 		}
 
 		// カメラの処理
