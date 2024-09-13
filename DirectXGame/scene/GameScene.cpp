@@ -127,6 +127,10 @@ void GameScene::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(42, 42);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+	//サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("music/op.wav");
+	//音楽再生
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_,true);
 }
 
 void GameScene::Update() {
@@ -202,6 +206,7 @@ void GameScene::Update() {
 		}
 
 		gameOverText_->Update();
+
 
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_Q)) {
@@ -402,6 +407,8 @@ void GameScene::ChangePhase() {
 			deathParticles_ = new DeathParticles;
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
+			// 音楽停止
+			audio_->StopWave(voiceHandle_);
 		}
 		break;
 	case Phase::kDeath:

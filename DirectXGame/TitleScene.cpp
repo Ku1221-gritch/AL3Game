@@ -12,6 +12,7 @@ TitleScene::~TitleScene() {
 }
 
 void TitleScene::Initialize() {
+	audio_ = Audio::GetInstance();
 	modelTitle_ = Model::CreateFromOBJ("text", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
 	modelText_ = Model::CreateFromOBJ("pressthespaceText",true);
@@ -36,11 +37,17 @@ void TitleScene::Initialize() {
 	worldTransformText_.Initialize();
 	worldTransformText_.scale_ = {kTitleTextScale, kTitleTextScale, kTitleTextScale};
 	worldTransformText_.rotation_.y = 1.03f * std::numbers::pi_v<float>;
+	// サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("music/se.wav");
+	// 音楽再生
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
 void TitleScene::Update() {
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		finished_ = true;
+		// 音楽停止
+		audio_->StopWave(voiceHandle_);
 	}
 	counter_ += 1.0f / 60.0f;
 	counter_ = std::fmod(counter_, kTimeTitleMove);
