@@ -353,7 +353,7 @@ void GameScene3::CheckAllCollisions() {
 			}
 			// 敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				bullet_->OnCollision(player_);
+				//bullet_->OnCollision(player_);
 				player_->OnCollision(enemy);
 			}
 		}
