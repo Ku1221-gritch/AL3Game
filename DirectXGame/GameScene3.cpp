@@ -130,6 +130,7 @@ void GameScene3::Initialize() {
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 	// サウンドデータの読み込み
 	soundDataHandle_ = audio_->LoadWave("music/op.wav");
+	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
@@ -408,6 +409,8 @@ void GameScene3::ChangePhase() {
 			deathParticles_ = new DeathParticles;
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
+			// 死亡SE
+			deathSEvoiceHandle_ = audio_->PlayWave(deathSEHandle_);
 			// 音楽停止
 			audio_->StopWave(voiceHandle_);
 		}

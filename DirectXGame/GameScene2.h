@@ -79,41 +79,69 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr;
 	// ブロック
 	Model* modelBlock_ = nullptr;
+	// 敵
+	Model* modelEnemy_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
+	static inline const int kEnemyMax = 20;
+#pragma region 敵一体ずつの配置場所
+	intVector2 enemyPos[kEnemyMax] = {
+	    {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0},
+        {0, 0}
+    };
+#pragma endregion
 	// 棘
 	Model* modelNeedle_ = nullptr;
 	Needle* needle_ = nullptr;
 	std::list<Needle*> needles_;
-	intVector2 needlePos[20] = {
-	    {38, 9},
-        {39, 9},
-        {43, 9},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0},
-        {0,  0}
+	static inline const int kNeedlesMax = 20;
+#pragma region 棘一つずつの配置場所
+	intVector2 needlePos[kNeedlesMax] = {
+	    {0,  0 },
+        {39, 9 },
+        {43, 9 },
+        {44, 9 },
+        {39, 16},
+        {37, 16},
+        {41, 16},
+        {43, 16},
+        {31, 12},
+        {32, 12},
+        {0,  0 },
+        {0,  0 },
+        {0,  0 },
+        {0,  0 },
+        {0,  0 },
+        {0,  0 },
+        {0,  0 },
+        {0,  0 },
+        {0,  0 },
+        {0,  0 }
     };
+#pragma endregion
 	// マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	// 敵
-	Model* modelEnemy_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemies_;
 	// 弾
 	Model* modelBullet_ = nullptr;
 	Bullet* bullet_ = nullptr;
@@ -135,8 +163,10 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 	// 音楽データ
 	uint32_t soundDataHandle_ = 0;
+	uint32_t deathSEHandle_ = 0;
 	// 音声再生ハンドル
 	uint32_t voiceHandle_ = 0;
+	uint32_t deathSEvoiceHandle_ = 0;
 	// トランスフォーム
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;

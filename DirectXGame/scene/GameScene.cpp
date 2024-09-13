@@ -97,8 +97,8 @@ void GameScene::Initialize() {
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	// Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
+	//Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 3);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(40, 10);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -131,7 +131,7 @@ void GameScene::Initialize() {
 	phase_ = Phase::kPlay;
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(42, 42);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(43, 35);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 	// フェード
@@ -142,6 +142,7 @@ void GameScene::Initialize() {
 	fade_->Initialize(&viewProjection_, 1.3f, fadePos, false);
 	//サウンドデータの読み込み
 	soundDataHandle_ = audio_->LoadWave("music/dan.wav");
+	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
 	//音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
@@ -432,6 +433,8 @@ void GameScene::ChangePhase() {
 			deathParticles_ = new DeathParticles;
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
+			//死亡SE
+			deathSEvoiceHandle_ = audio_->PlayWave(deathSEHandle_);
 			// 音楽停止
 			audio_->StopWave(voiceHandle_);
 		}
