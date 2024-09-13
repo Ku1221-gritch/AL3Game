@@ -151,7 +151,7 @@ void Player::MovementInput() {
 		// 非入力時は移動減衰をかける
 		velocity_.x *= (1.0f - kAttenuation);
 	}
-	
+
 	// 接地状態
 	if (onGround_) {
 		if (Input::GetInstance()->PushKey(DIK_UP)) {
@@ -165,6 +165,17 @@ void Player::MovementInput() {
 		velocity_ += Vector3(0, -kGravityAcceleration, 0);
 		// 落下速度制限
 		velocity_.y = (std::max)(velocity_.y, -kLimitFallSpeed);
+	}
+
+	if (isHit_) {
+		velocity_ = {0, 0};
+		if (Input::GetInstance()->TriggerKey(DIK_F)) {
+			escapeCount++;
+			if (escapeCount > kEscapeCountMax) {
+				isHit_ = false;
+				escapeCount = 0;
+			}
+		}
 	}
 }
 
@@ -441,12 +452,14 @@ void Player::OnCollision(const Enemy* enemy) {
 	// isDead_ = true;
 }
 
-//プレイヤーと棘の当たった場合の処理
+// プレイヤーと棘の当たった場合の処理
 void Player::OnCollision(const Needle* needle) {
 	(void)needle;
 	// デスフラグを立てる
 	isDead_ = true;
 }
+
+void Player::OnCollisionBullet() { isHit_ = true; }
 
 Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorner] = {

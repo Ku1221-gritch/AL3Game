@@ -13,6 +13,7 @@ GameScene::~GameScene() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
+	delete fade_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -20,13 +21,13 @@ GameScene::~GameScene() {
 	}
 	worldTransformMapChip_.clear();
 
-	//複数の敵のデリート
+	// 複数の敵のデリート
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}
 	enemies_.clear();
 
-	//複数の棘のデリート
+	// 複数の棘のデリート
 	for (Needle* needle : needles_) {
 		delete needle;
 	}
@@ -60,38 +61,40 @@ void GameScene::Initialize() {
 	viewProjection_.farZ = 200;
 	viewProjection_.Initialize();
 
-	//一旦敵停止
-	// 敵キャラの生成
+	// 一旦敵停止
+	//  敵キャラの生成
 	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
 
 	for (int32_t i = 5; i < 50; ++i) {
 		Enemy* newEnemy = new Enemy();
 		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
-		
+
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
-	//弾
-	modelBullet_ = Model::CreateFromOBJ("enemyBullet",true);
+	// 弾
+	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 44);
+	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
+	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_);
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
 
-	//棘の位置
+	// 棘の位置
 	for (int i = 0; i < 20; ++i) {
 		Needle* newNeedle = new Needle();
-		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x,needlePos[i].y);
+		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x, needlePos[i].y);
 		newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
 		needles_.push_back(newNeedle);
 		newNeedle->SetMapChipField(mapChipField_);
 	}
 
 	// 座標をマップチップ番号で指定
-	//プレイヤーの初期位置
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
+	// プレイヤーの初期位置
+	// Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -108,7 +111,7 @@ void GameScene::Initialize() {
 	// ゲームオーバーテキストの生成
 	gameOverText_ = new GameOverText;
 	gameOverText_->Initialize();
-	//デバッグカメラの生成
+	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	// カメラコントローラの初期化
 	cameraController_ = new CameraController();
@@ -128,9 +131,18 @@ void GameScene::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+
+	// フェード
+	Vector3 fadePos = mapChipField_->GetMapChipPositionByIndex(20, 44);
+	fadePos.y += 8;
+	fadePos.z -= 15;
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 1.3f, fadePos, false);
 }
 
 void GameScene::Update() {
+
+	fade_->Update();
 
 	ChangePhase();
 
@@ -163,16 +175,16 @@ void GameScene::Update() {
 		// スカイドームの更新処理
 		skydome_->Update();
 
-		// 敵キャラの更新		
+		// 敵キャラの更新
 		for (Enemy* enemy : enemies_) {
-		    enemy->Update();
+			enemy->Update();
 		}
-		
 
-		//棘の更新
+		// 棘の更新
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
+		bullet_->Update(bulletPosition_);
 
 		// ゴールの更新
 		goal_->Update();
@@ -258,7 +270,7 @@ void GameScene::Draw() {
 			if (!worldTransformBlock)
 				continue;
 
-			modelBlock_->Draw(*worldTransformBlock, viewProjection_);			
+			modelBlock_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}
 
@@ -278,10 +290,12 @@ void GameScene::Draw() {
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
 	}
-	//棘の描画処理
+	// 棘の描画処理
 	for (Needle* needle : needles_) {
 		needle->Draw();
 	}
+	// 弾の描画
+	bullet_->Draw();
 	// ゴールの描画
 	goal_->Draw();
 
@@ -289,6 +303,10 @@ void GameScene::Draw() {
 	if (deathParticles_) {
 		deathParticles_->Draw();
 	}
+
+	// フェード
+	fade_->Draw();
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -352,17 +370,16 @@ void GameScene::CheckAllCollisions() {
 				// 敵の衝突時コールバックを呼び出す
 				enemy->OnCollision(player_);
 			}
-			//敵の弾との衝突判定
+			// 敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				bullet_->OnCollision(player_);
-				player_->OnCollision(enemy);
+				player_->OnCollisionBullet();
 			}
 		}
-		//プレイヤーとゴールの当たり判定
+		// プレイヤーとゴールの当たり判定
 		aabb3 = goal_->GetAABB();
 		// ゴールにプレイヤーが触れた時
 		if (IsCollision(aabb1, aabb3)) {
-			//ゴールの衝突時コールバックを呼び出す
+			// ゴールの衝突時コールバックを呼び出す
 			goal_->OnCollision(player_);
 		}
 		// プレイヤーと棘全ての当たり判定
@@ -373,7 +390,7 @@ void GameScene::CheckAllCollisions() {
 			if (IsCollision(aabb1, aabb4)) {
 				// プレイヤーの衝突時コールバックを呼び出す
 				player_->OnCollision(needle);
-				//棘の衝突時コールバックを呼び出す
+				// 棘の衝突時コールバックを呼び出す
 				needle->OnCollision(player_);
 			}
 		}

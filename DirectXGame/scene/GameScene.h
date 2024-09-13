@@ -20,6 +20,7 @@
 #include "DeathParticles.h"
 #include "GameOverText.h"
 #include "CameraController.h"
+#include "FadeEffect.h"
 
 /// <summary>
 /// ゲームシーン
@@ -58,6 +59,8 @@ public: // メンバ関数
 	bool IsClear() const { return clearFinished_; };
 	//戻るフラグのgetter
 	bool IsBackSelect() const { return backSelect_; };
+
+	FadeEffect* fade_ = nullptr;
 
 private: // メンバ変数
 	//ゲームのフェーズ（型）
@@ -118,6 +121,7 @@ private: // メンバ変数
 	//弾
 	Model* modelBullet_ = nullptr;
 	Bullet* bullet_ = nullptr;
+	Vector3 bulletPosition_;
 	//ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
