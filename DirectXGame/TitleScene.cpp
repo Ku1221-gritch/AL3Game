@@ -39,14 +39,21 @@ void TitleScene::Initialize() {
 	worldTransformText_.rotation_.y = 1.03f * std::numbers::pi_v<float>;
 
 	fade_ = new FadeEffect();
-	fade_->Initialize(&viewProjection_, 0.0f, {0, 0, -40},true);
+	fade_->Initialize(&viewProjection_, 0.0f, 0.0f, {0, 0, -40}, false,kSquare);
 }
 
 
 
 void TitleScene::Update() {
 
-	fade_->Update();
+	
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		fade_->canFade_ = true;
+	}
+	if (fade_->canFade_) {
+		fade_->Update();
+		fade_->FadeIn();
+	}
 
 	counter_ += 1.0f / 60.0f;
 	counter_ = std::fmod(counter_, kTimeTitleMove);

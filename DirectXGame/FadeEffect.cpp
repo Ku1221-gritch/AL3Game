@@ -8,59 +8,115 @@ FadeEffect::FadeEffect() {}
 
 FadeEffect::~FadeEffect() {}
 
-void FadeEffect::Initialize(ViewProjection* viewProjection, float alpha, Vector3 position, bool onOff) {
+void FadeEffect::Initialize(ViewProjection* viewProjection, float squareAlpha, float circleAlpha, Vector3 position, bool onOff, FadeMode mode) {
 
 	// ビュープロジェクションの初期化
 	viewProjection_ = viewProjection;
 
-	// フェードイン
-	worldTransformFade_.Initialize();
-	worldTransformFade_.translation_ = position;
-	worldTransformFade_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
-	modelFade_ = Model::CreateFromOBJ("blackBoard", true);
+	// フェードモード
+	fadeMode_ = mode;
+	// フェードSquare
+	worldTransformSquare_.Initialize();
+	worldTransformSquare_.translation_ = position;
+	worldTransformSquare_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
+	modelSquare_ = Model::CreateFromOBJ("blackBoard", true);
 	canFade_ = onOff;
-	alpha_ = alpha;
+	squareAlpha_ = squareAlpha;
 	alphaValue_ = 0.05f;
-	color_ = new ObjectColor();
-	color_->Initialize();
-	color_->SetColor({1, 1, 1, alpha_});
-	color_->TransferMatrix();
+	fadeScale_ = {5, 5, 5};
+	squareColor_ = new ObjectColor();
+	squareColor_->Initialize();
+	squareColor_->SetColor({1, 1, 1, squareAlpha_});
+	squareColor_->TransferMatrix();
+	// フェードCircle
+	circleAlpha_ = circleAlpha;
+	worldTransformCircle_.Initialize();
+	worldTransformCircle_.translation_ = position;
+	modelCircle_ = Model::CreateFromOBJ("blackBoard", true);
+	circleColor_ = new ObjectColor();
+	circleColor_->Initialize();
+	circleColor_->SetColor({1, 1, 1, circleAlpha_});
+	circleColor_->TransferMatrix();
 }
 
 void FadeEffect::Update() {
-	if (canFade_ && Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		fadeStart_ = true;
+
+	if (fadeMode_ == FadeMode::kSquare) {
+
+		if (squareAlpha_ > 1.2f) {
+			squareAlpha_ = 1.2f;
+			isFadeDone_ = true;
+		}
+		if (squareAlpha_ < 0.0f) {
+			fadeStart_ = false;
+		}
 	}
-	if (fadeStart_) {
-		FadeIn();
-	}
-	if (isFadeDone_) {
-		FadeOut();
-	}
-	if (alpha_ > 1.2f) {
-		alpha_ = 1.2f;
-		isFadeDone_ = true;
-	}
-	if (alpha_ < 0.0f) {
-		isFadeDone_ = false;
-		fadeStart_ = false;
+	if (fadeMode_ == FadeMode::kCircle) {
+		if (worldTransformCircle_.scale_.x > 400.0f) {
+			worldTransformCircle_.scale_.x = 400.0f;
+			worldTransformCircle_.scale_.y = 400.0f;
+			isFadeDone_ = true;
+		}
+		if (worldTransformCircle_.scale_.x < 0) {
+			fadeScale_.x = 0;
+			fadeScale_.y = 0;
+			circleAlpha_ = 0.0f;
+			circleColor_->SetColor({1, 1, 1, circleAlpha_});
+			circleColor_->TransferMatrix();			
+			isFadeDone_ = false;
+			fadeStart_ = false;
+		}
 	}
 
-	worldTransformFade_.UpdateMatrix();
+	worldTransformSquare_.UpdateMatrix();
 }
 
-void FadeEffect::Draw() { modelFade_->Draw(worldTransformFade_, *viewProjection_, color_); }
+void FadeEffect::Draw() {
+	if (fadeMode_ == kSquare) {
+		modelSquare_->Draw(worldTransformSquare_, *viewProjection_, squareColor_);
+	} else if (fadeMode_ == kCircle) {
+		modelCircle_->Draw(worldTransformCircle_, *viewProjection_, circleColor_);
+	}
+}
 
 void FadeEffect::FadeIn() {
-	alpha_ += alphaValue_;
-	color_->SetColor({1, 1, 1, alpha_});
-	color_->TransferMatrix();
-	worldTransformFade_.UpdateMatrix();
+	squareAlpha_ += alphaValue_;
+	squareColor_->SetColor({1, 1, 1, squareAlpha_});
+	squareColor_->TransferMatrix();
+	worldTransformSquare_.UpdateMatrix();
 }
 
 void FadeEffect::FadeOut() {
-	alpha_ -= alphaValue_;
-	color_->SetColor({1, 1, 1, alpha_});
-	color_->TransferMatrix();
-	worldTransformFade_.UpdateMatrix();
+	isFadeDone_ = false;
+	squareAlpha_ -= alphaValue_;
+	squareColor_->SetColor({1, 1, 1, squareAlpha_});
+	squareColor_->TransferMatrix();
+	worldTransformSquare_.UpdateMatrix();
+}
+
+void FadeEffect::FadeUp() {
+	worldTransformSquare_.translation_.y -= 0.5f;
+	worldTransformSquare_.UpdateMatrix();
+}
+
+void FadeEffect::FadeInCircle(Vector3 position) {
+	worldTransformCircle_.translation_ = position;
+	fadeMode_ = kCircle;
+	circleAlpha_ = 1.0f;
+	circleColor_->SetColor({1, 1, 1, circleAlpha_});
+	circleColor_->TransferMatrix();
+	worldTransformCircle_.scale_.x += fadeScale_.x;
+	worldTransformCircle_.scale_.y += fadeScale_.y;
+	worldTransformCircle_.UpdateMatrix();
+}
+
+void FadeEffect::FadeOutCircle(Vector3 position) {
+	worldTransformCircle_.translation_ = position;
+	fadeMode_ = kCircle;
+	circleAlpha_ = 1.0f;
+	circleColor_->SetColor({1, 1, 1, circleAlpha_});
+	circleColor_->TransferMatrix();
+	worldTransformCircle_.scale_.x -= fadeScale_.x;
+	worldTransformCircle_.scale_.y -= fadeScale_.y;
+	worldTransformCircle_.UpdateMatrix();
 }

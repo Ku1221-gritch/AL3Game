@@ -7,6 +7,7 @@
 #include "DirectXCommon.h"
 #include "Enemy.h"
 #include "Function.h"
+#include "FadeEffect.h"
 #include "GameOverText.h"
 #include "Goal.h"
 #include "Input.h"
@@ -58,6 +59,8 @@ public: // メンバ関数
 	bool ProceedStage3_() const { return proceedStage3_; }
 	//タイトルに戻る
 	bool IsBackTitle_() const { return backTitle_; }
+	// フェード
+	FadeEffect* fade_ = nullptr;
 
 private: // メンバ変数
 

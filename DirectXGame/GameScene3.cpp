@@ -128,6 +128,13 @@ void GameScene3::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+
+	Vector3 fadePos = playerPosition;
+	fadePos.y += 8;
+	fadePos.z -= 15;
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
+	fade_->SetCircleScale();
 }
 
 void GameScene3::Update() {
@@ -353,7 +360,6 @@ void GameScene3::CheckAllCollisions() {
 			}
 			// 敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				bullet_->OnCollision(player_);
 				player_->OnCollision(enemy);
 			}
 		}

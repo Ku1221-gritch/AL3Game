@@ -81,7 +81,7 @@ void GameScene::Initialize() {
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
 
-	//棘の位置
+	// 棘の位置
 	for (int i = 0; i < kNeedlesMax; ++i) {
 		Needle* newNeedle = new Needle();
 		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x, needlePos[i].y);
@@ -98,7 +98,7 @@ void GameScene::Initialize() {
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
 	// Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -106,7 +106,6 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &viewProjection_, playerPosition);
 	player_->SetMapChipField(mapChipField_);
-
 	// デスパーティクルの生成
 	modelDeathParticle_ = Model::CreateFromOBJ("deathparticles", true);
 	deathParticles_ = new DeathParticles;
@@ -136,15 +135,19 @@ void GameScene::Initialize() {
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 
 	// フェード
-	Vector3 fadePos = mapChipField_->GetMapChipPositionByIndex(20, 44);
+	Vector3 fadePos = playerPosition;
 	fadePos.y += 8;
 	fadePos.z -= 15;
 	fade_ = new FadeEffect();
-	fade_->Initialize(&viewProjection_, 1.3f, fadePos, false);
+	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
+	fade_->SetCircleScale();
 }
 
 void GameScene::Update() {
 
+	if (!fade_->canFade_) {
+		fade_->FadeOutCircle(playerPosition);
+	}
 	fade_->Update();
 
 	ChangePhase();
@@ -311,7 +314,6 @@ void GameScene::Draw() {
 
 	// フェード
 	fade_->Draw();
-
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

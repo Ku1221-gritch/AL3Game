@@ -13,13 +13,12 @@ public:
 	Bullet();
 	~Bullet();
 
-	void Initialize(Model* model,ViewProjection* viewProjection, const Vector3& position);
-	void Update(Vector3 position);
+	void Initialize(Model* model,ViewProjection* viewProjection, Vector3& position ,Vector3& shotPos);
+	void Update();
 	void Draw();
 	void OnCollision(const Player* player, Vector3 position);
 
-	Vector3 GetWorldPosition();
-	void BulletShot(Vector3 position);
+	Vector3 GetWorldPosition() const { return worldTransform_.translation_; };
 
 	// AABBを取得
 	AABB GetAABB();
@@ -49,5 +48,6 @@ private:
 
 	static inline const int kIntervalTimer = 120;
 
+	Vector3 shotPos_;
 
 };

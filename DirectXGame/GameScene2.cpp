@@ -47,13 +47,13 @@ void GameScene2::Initialize() {
 	viewProjection_.Initialize();
 
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	modelSkydome_ = Model::CreateFromOBJ("stageskydome", true);
 	skydome_ = new Skydome();
 	skydome_->Initialize(modelSkydome_);
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/firststage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -91,7 +91,7 @@ void GameScene2::Initialize() {
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -128,9 +128,22 @@ void GameScene2::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+	
+	// フェード
+	fadePos = playerPosition;
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
+	fade_->SetCircleScale();
+	fadePos.x -= 16;
 }
 
 void GameScene2::Update() {
+
+	if (!fade_->canFade_) {
+		fade_->FadeOutCircle(fadePos);
+	}
+	fade_->Update();
+
 
 	ChangePhase();
 
@@ -289,6 +302,8 @@ void GameScene2::Draw() {
 		deathParticles_->Draw();
 	}
 
+	fade_->Draw();
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -353,7 +368,6 @@ void GameScene2::CheckAllCollisions() {
 			}
 			// 敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				bullet_->OnCollision(player_);
 				player_->OnCollision(enemy);
 			}
 		}
