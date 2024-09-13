@@ -14,7 +14,6 @@ GameScene2::~GameScene2() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
-	delete modelF_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -122,13 +121,6 @@ void GameScene2::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
-	// F
-	modelF_ = Model::CreateFromOBJ("F", true);
-	const float kF = 2.0f;
-	worldTransformF_.Initialize();
-	worldTransformF_.scale_ = { kF, kF, kF };
-	worldTransformF_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
-	worldTransformF_.translation_ = playerPosition;
 
 	// サウンドデータの読み込み
 	soundDataHandle_ = audio_->LoadWave("music/danat.wav");
@@ -292,11 +284,6 @@ void GameScene2::Draw() {
 	}
 	// ゴールの描画
 	goal_->Draw();
-
-	//F
-	if (player_->isHit_) {
-		modelF_->Draw(worldTransformF_, viewProjection_);
-	}
 
 	// デスパーティクルの描画処理
 	if (deathParticles_) {

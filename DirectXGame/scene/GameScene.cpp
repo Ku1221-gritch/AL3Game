@@ -88,7 +88,7 @@ void GameScene::Initialize() {
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
 	// Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
-	playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -266,10 +266,6 @@ void GameScene::Draw() {
 		}
 	} else if (player_->IsDead()) {
 		gameOverText_->Draw();
-	}
-
-	if (player_->isHit_) {
-		modelF_->Draw(worldTransformF_, viewProjection_);
 	}
 
 	// ブロックの描画

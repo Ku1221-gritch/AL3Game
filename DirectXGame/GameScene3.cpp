@@ -14,7 +14,6 @@ GameScene3::~GameScene3() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
-	delete modelF_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -294,16 +293,8 @@ void GameScene3::Draw() {
 		needle->Draw();
 	}
 
-	// 弾の描画
-	bullet_->Draw();
-
 	// ゴールの描画
 	goal_->Draw();
-
-	// F
-	if (player_->isHit_) {
-		modelF_->Draw(worldTransformF_, viewProjection_);
-	}
 
 	// デスパーティクルの描画処理
 	if (deathParticles_) {

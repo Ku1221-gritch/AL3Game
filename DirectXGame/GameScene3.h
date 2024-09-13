@@ -141,13 +141,7 @@ private: // メンバ変数
 	Model* modelPlayer_ = nullptr;
 	Model* modelMeltPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	// 敵
-	Model* modelEnemy_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemies_;
-	// 弾
-	Model* modelBullet_ = nullptr;
-	Bullet* bullet_ = nullptr;
+	Vector3 playerPosition = 0;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
