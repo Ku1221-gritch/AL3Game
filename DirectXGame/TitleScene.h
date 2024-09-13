@@ -21,6 +21,8 @@ public:
 
 	FadeEffect* fade_ = nullptr;
 
+	bool IsFinished() const { return finished_; };
+
 private:
 	static inline const float kTimeTitleMove = 2.0f;
 
@@ -43,5 +45,5 @@ private:
 	Skydome* Skydome_ = nullptr;
 
 	float counter_ = 0.0f;
-
+	bool finished_ = false;
 };
