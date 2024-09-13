@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "struct.h"
 
+class MapChipField;
 class Player;
 
 class Bullet {
@@ -13,7 +14,8 @@ public:
 	Bullet();
 	~Bullet();
 
-	void Initialize(Model* model,ViewProjection* viewProjection, Vector3& position ,Vector3& shotPos);
+	void Initialize(Model* model, ViewProjection* viewProjection, Vector3& position, Vector3& shotPos);
+
 	void Update();
 	void Draw();
 	void OnCollision(const Player* player, Vector3 position);
@@ -28,7 +30,11 @@ public:
 
 	static inline const float kSpeedRight = 0.5f;
 
+	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
+
 private:
+	// マップチップによるフィールド
+	MapChipField* mapChipField_ = nullptr;
 	//モデル
 	Model* model_ = Model::CreateFromOBJ("enemyBullet", true);
 	// カメラ
@@ -48,6 +54,6 @@ private:
 
 	static inline const int kIntervalTimer = 120;
 
-	Vector3 shotPos_;
+	Vector3 shotPos_ = 0;
 
 };

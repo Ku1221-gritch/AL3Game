@@ -47,13 +47,13 @@ void GameScene3::Initialize() {
 	viewProjection_.Initialize();
 
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	modelSkydome_ = Model::CreateFromOBJ("stageskydome", true);
 	skydome_ = new Skydome();
 	skydome_->Initialize(modelSkydome_);
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	mapChipField_->LoadMapChipCsv("Resources/map/thirdStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -72,10 +72,11 @@ void GameScene3::Initialize() {
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
-	// 弾
+	// 弾の位置
+	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 45);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
+	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_,bulletPosition_);
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
@@ -128,6 +129,11 @@ void GameScene3::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+	// サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("music/op.wav");
+	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
+	// 音楽再生
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 
 	Vector3 fadePos = playerPosition;
 	fadePos.y += 8;
@@ -184,6 +190,9 @@ void GameScene3::Update() {
 		goal_->Update();
 		if (goal_->isGoal()) {
 			clearFinished_ = true;
+		}
+		if (clearFinished_) {
+			audio_->StopWave(voiceHandle_);
 		}
 
 		// カメラの処理
@@ -407,6 +416,10 @@ void GameScene3::ChangePhase() {
 			deathParticles_ = new DeathParticles;
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
+			// 死亡SE
+			deathSEvoiceHandle_ = audio_->PlayWave(deathSEHandle_);
+			// 音楽停止
+			audio_->StopWave(voiceHandle_);
 		}
 		break;
 	case Phase::kDeath:

@@ -11,9 +11,10 @@ ClearScene::~ClearScene() {
 }
 
 void ClearScene::Initialize() {
+	audio_ = Audio::GetInstance();
 	modelClear_ = Model::CreateFromOBJ("gamecleartext", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
-	modelText_ = Model::CreateFromOBJ("presstheenterText", true);
+	modelText_ = Model::CreateFromOBJ("pressthespaceText", true);
 	// スカイドーム
 	modelSkydome_ = Model::CreateFromOBJ("clearskydome", true);
 	skydome_ = new Skydome();
@@ -35,11 +36,17 @@ void ClearScene::Initialize() {
 	worldTransformText_.Initialize();
 	worldTransformText_.scale_ = {kTitleTextScale, kTitleTextScale, kTitleTextScale};
 	worldTransformText_.rotation_.y = 1.03f * std::numbers::pi_v<float>;
+
+	// サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("music/cl.wav");
+	// 音楽再生
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
 void ClearScene::Update() {
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		finished_ = true;
+		audio_->StopWave(voiceHandle_);
 	}
 	counter_ += 1.0f / 60.0f;
 	counter_ = std::fmod(counter_, kTimeTextMove);

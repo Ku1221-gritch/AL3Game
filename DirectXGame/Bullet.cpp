@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "Player.h"
+#include "GameScene.h"
 
 Bullet::Bullet() {}
 
@@ -11,6 +12,7 @@ void Bullet::Initialize(Model* model, ViewProjection* viewProjection, Vector3& p
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
+	// 速度を設定する
 	velocity_ = {kSpeedLeft, 0};
 	shotPos_ = shotPos;
 }
@@ -34,7 +36,16 @@ void Bullet::Update() {
 	// 回転アニメーション
 	float radian = float(std::sin(shotTimer_));
 	worldTransform_.rotation_.x = radian;
+	shotTimer_++;
 
+	if (shotTimer_ >= kIntervalTimer) {
+		shotTimer_ = 0;
+		isShot_ = true;
+	}
+	if (isShot_) {
+		worldTransform_.translation_ = shotPos_;
+		isShot_ = false;
+	}
 	worldTransform_.UpdateMatrix();
 }
 

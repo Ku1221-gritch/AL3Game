@@ -54,7 +54,7 @@ void GameScene::Initialize() {
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/firstStage.csv");
+	mapChipField_->LoadMapChipCsv("Resources/map/firstStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -73,10 +73,11 @@ void GameScene::Initialize() {
 		newEnemy->SetMapChipField(mapChipField_);
 	}
 	// 弾
-	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 44);
+	//弾の位置
+	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 45);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_);
+	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_,bulletPosition_);
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
@@ -89,11 +90,6 @@ void GameScene::Initialize() {
 		needles_.push_back(newNeedle);
 		newNeedle->SetMapChipField(mapChipField_);
 	}
-
-	// 弾
-	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
-	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
@@ -130,15 +126,21 @@ void GameScene::Initialize() {
 	phase_ = Phase::kPlay;
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(42, 42);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(43, 35);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
-
 	// フェード
 	Vector3 fadePos = playerPosition;
 	fadePos.y += 8;
 	fadePos.z -= 15;
 	fade_ = new FadeEffect();
+  
+	//サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("music/dan.wav");
+	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
+	//音楽再生
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
+
 	fade_->Initialize(&viewProjection_, 1.3f, 0.0f, fadePos, false, kCircle);
 	fade_->SetCircleScale();
 }
@@ -154,6 +156,7 @@ void GameScene::Update() {
 
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		backSelect_ = true;
+		audio_->StopWave(voiceHandle_);
 	}
 
 	switch (phase_) {
@@ -190,12 +193,15 @@ void GameScene::Update() {
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
-		bullet_->Update(bulletPosition_);
+		bullet_->Update();
 
 		// ゴールの更新
 		goal_->Update();
 		if (goal_->isGoal()) {
 			clearFinished_ = true;
+		}
+		if (clearFinished_) {
+			audio_->StopWave(voiceHandle_);
 		}
 
 		// カメラの処理
@@ -222,6 +228,7 @@ void GameScene::Update() {
 		}
 
 		gameOverText_->Update();
+
 
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_Q)) {
@@ -426,6 +433,10 @@ void GameScene::ChangePhase() {
 			deathParticles_ = new DeathParticles;
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
+			//死亡SE
+			deathSEvoiceHandle_ = audio_->PlayWave(deathSEHandle_);
+			// 音楽停止
+			audio_->StopWave(voiceHandle_);
 		}
 		break;
 	case Phase::kDeath:

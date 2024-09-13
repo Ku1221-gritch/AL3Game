@@ -25,12 +25,16 @@ GameScene2::~GameScene2() {
 		delete enemy;
 	}
 	enemies_.clear();
-
 	// 複数の棘のデリート
 	for (Needle* needle : needles_) {
 		delete needle;
 	}
 	needles_.clear();
+	// 複数の弾のデリート
+	for (Bullet* bullet : bullets_) {
+		delete bullet;
+	}
+	bullets_.clear();
 }
 
 // 初期化
@@ -53,33 +57,35 @@ void GameScene2::Initialize() {
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/firststage.csv");
+	mapChipField_->LoadMapChipCsv("Resources/map/secondStage.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
 	viewProjection_.farZ = 200;
 	viewProjection_.Initialize();
 
-	// 一旦敵停止
 	//  敵キャラの生成
 	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
-
-	for (int32_t i = 5; i < 50; ++i) {
+	//敵の位置
+	for (int32_t i = 0; i < kEnemyMax; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(enemyPos[i].x, enemyPos[i].y);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
-
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
-	// 弾
+	// 弾の生成
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
-	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
-
+	// 弾の位置
+	for (int i = 0; i < kBulletsMax; ++i) {
+		Bullet* newBullet = new Bullet();
+		Vector3 bulletPosition = mapChipField_->GetMapChipPositionByIndex(bulletPos[i].x, bulletPos[i].y);
+		newBullet->Initialize(modelNeedle_, &viewProjection_, bulletPosition,bulletPosition);
+		bullets_.push_back(newBullet);
+		newBullet->SetMapChipField(mapChipField_);
+	}
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
-
 	// 棘の位置
 	for (int i = 0; i < 20; ++i) {
 		Needle* newNeedle = new Needle();
@@ -128,7 +134,12 @@ void GameScene2::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
-	
+
+	// サウンドデータの読み込み
+	soundDataHandle_ = audio_->LoadWave("music/danat.wav");
+	deathSEHandle_ = audio_->LoadWave("music/maou_se_battle02.wav");
+	// 音楽再生
+	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);	
 	// フェード
 	fadePos = playerPosition;
 	fade_ = new FadeEffect();
@@ -149,6 +160,8 @@ void GameScene2::Update() {
 
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		backSelect_ = true;
+		// 音楽停止
+		audio_->StopWave(voiceHandle_);
 	}
 
 	switch (phase_) {
@@ -180,16 +193,21 @@ void GameScene2::Update() {
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();
 		}
-
 		// 棘の更新
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
-
+		// 弾の更新
+		for (Bullet* bullet : bullets_) {
+			bullet->Update();
+		}
 		// ゴールの更新
 		goal_->Update();
 		if (goal_->isGoal()) {
 			clearFinished_ = true;
+		}
+		if (clearFinished_) {
+			audio_->StopWave(voiceHandle_);
 		}
 
 		// カメラの処理
@@ -293,6 +311,10 @@ void GameScene2::Draw() {
 	// 棘の描画処理
 	for (Needle* needle : needles_) {
 		needle->Draw();
+	}
+	// 弾の描画処理
+	for (Bullet* bullet : bullets_) {
+		bullet->Draw();
 	}
 	// ゴールの描画
 	goal_->Draw();
@@ -415,6 +437,10 @@ void GameScene2::ChangePhase() {
 			deathParticles_ = new DeathParticles;
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
+			// 死亡SE
+			deathSEvoiceHandle_ = audio_->PlayWave(deathSEHandle_);
+			// 音楽停止
+			audio_->StopWave(voiceHandle_);
 		}
 		break;
 	case Phase::kDeath:
