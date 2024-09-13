@@ -73,7 +73,8 @@ void GameScene::Initialize() {
 		newEnemy->SetMapChipField(mapChipField_);
 	}
 	// 弾
-	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 44);
+	//弾の位置
+	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 45);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
 	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_);
@@ -90,15 +91,9 @@ void GameScene::Initialize() {
 		newNeedle->SetMapChipField(mapChipField_);
 	}
 
-	// 弾
-	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
-	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
-
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	//Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 3);
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(40, 10);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
