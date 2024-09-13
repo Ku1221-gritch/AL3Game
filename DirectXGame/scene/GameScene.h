@@ -57,6 +57,8 @@ public: // メンバ関数
 	bool IsDeathFinished() const { return deathFinished_; };
 	//クリアフラグのgetter
 	bool IsClear() const { return clearFinished_; };
+	//戻るフラグのgetter
+	bool IsBackSelect() const { return backSelect_; };
 
 	FadeEffect* fade_ = nullptr;
 
@@ -88,7 +90,7 @@ private: // メンバ変数
 	{
 	    {38, 9},
         {39, 9},
-		{40, 8},
+		{43, 9},
         {0, 0},
         {0, 0},
         {0, 0},
@@ -157,6 +159,8 @@ private: // メンバ変数
 	bool deathFinished_ = false;
 	//クリアによる終了フラグ
 	bool clearFinished_ = false;
+	//ステージ選択に戻るフラグ
+	bool backSelect_ = false;
 
 	/// <summary>
 	/// ゲームシーン用

@@ -6,6 +6,7 @@
 #include "GameScene.h"
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
+#include "SelectScene.h"
 #include "TextureManager.h"
 #include "TitleScene.h"
 #include "ViewProjection.h"
@@ -14,12 +15,14 @@
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+SelectScene* selectScene = nullptr;
 ClearScene* clearScene = nullptr;
 
 enum class Scene {
 	kUnknown = 0,
 
 	kTitle,
+	kSelect,
 	kGame,
 	kClear,
 };
@@ -31,25 +34,51 @@ void ChangeScene() {
 	case Scene::kTitle:
 		if (titleScene->fade_->IsFadeDone()) {
 			// シーン変更
-			scene = Scene::kGame;
+			scene = Scene::kSelect;
 			// 旧シーンの解放
 			delete titleScene;
 			titleScene = nullptr;
 			// 新シーンの生成と初期化
-			gameScene = new GameScene;
-			gameScene->Initialize();
+			selectScene = new SelectScene;
+			selectScene->Initialize();
 		}
 		break;
+	case Scene::kSelect:
+		if (selectScene->ProceedStage1_()) {
+
+			// シーン変更
+			scene = Scene::kGame;
+			// 旧シーンの解放
+			delete selectScene;
+			selectScene = nullptr;
+			// 新シーンの生成と初期化
+			gameScene = new GameScene;
+			gameScene->Initialize();
+		} else if (selectScene->IsBackTitle_()) {
+
+			// シーン変更
+			scene = Scene::kTitle;
+			// 旧シーンの解放
+			delete selectScene;
+			selectScene = nullptr;
+			// 新シーンの生成と初期化
+			titleScene = new TitleScene;
+			titleScene->Initialize();
+		}
+		break;
+
 	case Scene::kGame:
 		if (gameScene->IsDeathFinished()) {
 			// シーン変更
-			scene = Scene::kTitle;
+			scene = Scene::kSelect;
 
 			delete gameScene;
 			gameScene = nullptr;
 
-			titleScene = new TitleScene;
-			titleScene->Initialize();
+
+			selectScene = new SelectScene;
+			selectScene->Initialize();
+
 		} else if (gameScene->IsClear()) {
 			// シーン変更
 			scene = Scene::kClear;
@@ -59,6 +88,15 @@ void ChangeScene() {
 
 			clearScene = new ClearScene;
 			clearScene->Initialize();
+		} else if (gameScene->IsBackSelect()) {
+			// シーン変更
+			scene = Scene::kSelect;
+
+			delete gameScene;
+			gameScene = nullptr;
+
+			selectScene = new SelectScene;
+			selectScene->Initialize();
 		}
 		break;
 	case Scene::kClear:
@@ -66,13 +104,13 @@ void ChangeScene() {
 		if (clearScene->IsFinished()) {
 
 			// シーン変更
-			scene = Scene::kTitle;
+			scene = Scene::kSelect;
 
 			delete clearScene;
 			clearScene = nullptr;
 
-			titleScene = new TitleScene;
-			titleScene->Initialize();
+			selectScene = new SelectScene;
+			selectScene->Initialize();
 		}
 		break;
 	}
@@ -81,6 +119,9 @@ void UpdateScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Update();
+		break;
+	case Scene::kSelect:
+		selectScene->Update();
 		break;
 	case Scene::kGame:
 		gameScene->Update();
@@ -94,6 +135,9 @@ void DrawScene() {
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene->Draw();
+		break;
+	case Scene::kSelect:
+		selectScene->Draw();
 		break;
 	case Scene::kGame:
 		gameScene->Draw();
@@ -197,6 +241,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	delete titleScene;
 	delete gameScene;
+	delete selectScene;
 	delete clearScene;
 
 	Model::StaticInitialize();
