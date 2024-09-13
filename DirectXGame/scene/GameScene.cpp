@@ -15,6 +15,7 @@ GameScene::~GameScene() {
 	delete modelDeathParticle_;
 	delete mapChipField_;
 	delete fade_;
+	delete modelF_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -98,8 +99,7 @@ void GameScene::Initialize() {
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	// Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -143,9 +143,28 @@ void GameScene::Initialize() {
 	fadePos.z -= 15;
 	fade_ = new FadeEffect();
 	fade_->Initialize(&viewProjection_, 1.3f, fadePos, false);
+
+	//F
+	modelF_ = Model::CreateFromOBJ("F", true);
+	const float kF = 2.0f;
+	worldTransformF_.Initialize();
+	worldTransformF_.scale_ = {kF, kF, kF};
+	worldTransformF_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformF_.translation_ = playerPosition;
 }
 
 void GameScene::Update() {
+
+	//F
+	viewProjection_.TransferMatrix();
+	counter_ += 1.0f / 60.0f;
+	counter_ = std::fmod(counter_, kTimeTextMove);
+	float angle = counter_ / kTimeTextMove * 1.0f * std::numbers::pi_v<float>;
+	worldTransformF_.translation_.z = std::sin(angle);
+	playerPosition = player_->GetWorldPosition();
+	worldTransformF_.translation_.x = playerPosition.x + 2;
+	worldTransformF_.translation_.y = playerPosition.y + 2;
+	worldTransformF_.UpdateMatrix();
 
 	fade_->Update();
 
@@ -278,6 +297,10 @@ void GameScene::Draw() {
 		}
 	} else if (player_->IsDead()) {
 		gameOverText_->Draw();
+	}
+
+	if (player_->isHit_) {
+		modelF_->Draw(worldTransformF_, viewProjection_);
 	}
 
 	// ブロックの描画

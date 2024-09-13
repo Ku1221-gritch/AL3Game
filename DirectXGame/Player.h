@@ -92,6 +92,8 @@ public:
 	// クリアフラグのgetter
 	bool IsClear() const { return isClear_; }
 
+	bool isHit_ = false;
+
 private:
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
@@ -136,7 +138,7 @@ private:
 	bool isDead_ = false;
 
 	// 弾に当たったフラグ
-	bool isHit_ = false;
+	
 
 	// クリアフラグ
 	bool isClear_ = false;
