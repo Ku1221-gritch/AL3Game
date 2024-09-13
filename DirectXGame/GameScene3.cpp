@@ -14,6 +14,7 @@ GameScene3::~GameScene3() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
+	delete modelF_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -92,7 +93,7 @@ void GameScene3::Initialize() {
 
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
+	playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -130,9 +131,28 @@ void GameScene3::Initialize() {
 	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
+
+	// F
+	modelF_ = Model::CreateFromOBJ("F", true);
+	const float kF = 2.0f;
+	worldTransformF_.Initialize();
+	worldTransformF_.scale_ = {kF, kF, kF};
+	worldTransformF_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+	worldTransformF_.translation_ = playerPosition;
 }
 
 void GameScene3::Update() {
+
+	// F
+	viewProjection_.TransferMatrix();
+	counter_ += 1.0f / 60.0f;
+	counter_ = std::fmod(counter_, kTimeTextMove);
+	float angle = counter_ / kTimeTextMove * 1.0f * std::numbers::pi_v<float>;
+	worldTransformF_.translation_.z = std::sin(angle);
+	playerPosition = player_->GetWorldPosition();
+	worldTransformF_.translation_.x = playerPosition.x + 2;
+	worldTransformF_.translation_.y = playerPosition.y + 2;
+	worldTransformF_.UpdateMatrix();
 
 	ChangePhase();
 
@@ -286,6 +306,11 @@ void GameScene3::Draw() {
 	// ゴールの描画
 	goal_->Draw();
 
+	// F
+	if (player_->isHit_) {
+		modelF_->Draw(worldTransformF_, viewProjection_);
+	}
+
 	// デスパーティクルの描画処理
 	if (deathParticles_) {
 		deathParticles_->Draw();
@@ -340,22 +365,24 @@ void GameScene3::CheckAllCollisions() {
 		// プレイヤーの座標
 		aabb1 = player_->GetAABB();
 
-		// プレイヤーと敵全ての当たり判定
-		for (Enemy* enemy : enemies_) {
-			// 敵の座標
-			aabb2 = enemy->GetAABB();
-			aabb4 = bullet_->GetAABB();
+		if (!Input::GetInstance()->PushKey(DIK_DOWN)) {
+			// プレイヤーと敵全ての当たり判定
+			for (Enemy* enemy : enemies_) {
+				// 敵の座標
+				aabb2 = enemy->GetAABB();
+				aabb4 = bullet_->GetAABB();
 
-			// AABB同士の交差判定
-			if (IsCollision(aabb1, aabb2)) {
-				// プレイヤーの衝突時コールバックを呼び出す
-				player_->OnCollision(enemy);
-				// 敵の衝突時コールバックを呼び出す
-				enemy->OnCollision(player_);
-			}
-			// 敵の弾との衝突判定
-			if (IsCollision(aabb1, aabb4)) {
-				player_->OnCollision(enemy);
+				// AABB同士の交差判定
+				if (IsCollision(aabb1, aabb2)) {
+					// プレイヤーの衝突時コールバックを呼び出す
+					player_->OnCollision(enemy);
+					// 敵の衝突時コールバックを呼び出す
+					enemy->OnCollision(player_);
+				}
+				// 敵の弾との衝突判定
+				if (IsCollision(aabb1, aabb4)) {
+					player_->OnCollision(enemy);
+				}
 			}
 		}
 		// プレイヤーとゴールの当たり判定

@@ -111,6 +111,13 @@ private: // メンバ変数
 	Model* modelPlayer_ = nullptr;
 	Model* modelMeltPlayer_ = nullptr;
 	Player* player_ = nullptr;
+	Vector3 playerPosition;
+	// F
+	Model* modelF_ = nullptr;
+	WorldTransform worldTransformF_;
+	static inline const float kTimeTextMove = 0.1f;
+	float counter_ = 0.0f;
+	
 	// 敵
 	Model* modelEnemy_ = nullptr;
 	Enemy* enemy_ = nullptr;
