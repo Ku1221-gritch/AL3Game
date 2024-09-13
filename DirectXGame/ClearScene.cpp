@@ -11,10 +11,11 @@ ClearScene::~ClearScene() {
 }
 
 void ClearScene::Initialize() {
-	modelClear_ = Model::CreateFromOBJ("gameclear", true);
+	modelClear_ = Model::CreateFromOBJ("gamecleartext", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
+	modelText_ = Model::CreateFromOBJ("presstheenterText", true);
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	modelSkydome_ = Model::CreateFromOBJ("clearskydome", true);
 	skydome_ = new Skydome();
 	skydome_->Initialize(modelSkydome_);
 	// ビュープロジェクションの初期化
@@ -26,10 +27,14 @@ void ClearScene::Initialize() {
 	worldTransformPlayer_.rotation_.y = 0.95f * std::numbers::pi_v<float>;
 	worldTransformPlayer_.translation_.y = -9.0f;
 
-	const float kTextTitle = 10.0f;
+	const float kTitleTextScale = 10.0f;
 	worldTransformTitle_.Initialize();
-	worldTransformTitle_.scale_ = {kTextTitle, kTextTitle, kTextTitle};
+	worldTransformTitle_.scale_ = {kTitleTextScale, kTitleTextScale, kTitleTextScale};
 	worldTransformTitle_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+
+	worldTransformText_.Initialize();
+	worldTransformText_.scale_ = {kTitleTextScale, kTitleTextScale, kTitleTextScale};
+	worldTransformText_.rotation_.y = 1.03f * std::numbers::pi_v<float>;
 }
 
 void ClearScene::Update() {
@@ -42,6 +47,7 @@ void ClearScene::Update() {
 	float angle = counter_ / kTimeTextMove * 2.0f * std::numbers::pi_v<float>;
 
 	worldTransformTitle_.translation_.y = std::sin(angle) + 10.0f;
+	worldTransformText_.translation_.y = std::sin(angle) + 0.0f;
 
 	// スカイドームの更新処理
 	skydome_->Update();
@@ -49,6 +55,7 @@ void ClearScene::Update() {
 	viewProjection_.TransferMatrix();
 	worldTransformTitle_.UpdateMatrix();
 	worldTransformPlayer_.UpdateMatrix();
+	worldTransformText_.UpdateMatrix();
 }
 
 void ClearScene::Draw() {
@@ -61,6 +68,6 @@ void ClearScene::Draw() {
 	skydome_->Draw(&viewProjection_);
 	modelClear_->Draw(worldTransformTitle_, viewProjection_);
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_);
-
+	modelText_->Draw(worldTransformText_, viewProjection_);
 	Model::PostDraw();
 }

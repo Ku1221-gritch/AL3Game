@@ -26,12 +26,14 @@ private:
 	ViewProjection viewProjection_;
 	WorldTransform worldTransformTitle_;
 	WorldTransform worldTransformPlayer_;
+	WorldTransform worldTransformText_;
 
 	Model* modelTitle_ = nullptr;
+	Model* modelText_ = nullptr;
 	Model* modelPlayer_ = nullptr;
 	// スカイドーム
 	Model* modelSkydome_ = nullptr;
-	Skydome* skydome_ = nullptr;
+	Skydome* Skydome_ = nullptr;
 
 	float counter_ = 0.0f;
 

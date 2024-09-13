@@ -23,8 +23,10 @@ private:
 	ViewProjection viewProjection_;
 	WorldTransform worldTransformTitle_;
 	WorldTransform worldTransformPlayer_;
+	WorldTransform worldTransformText_;
 
 	Model* modelClear_ = nullptr;
+	Model* modelText_ = nullptr;
 	Model* modelPlayer_ = nullptr;
 	// スカイドーム
 	Model* modelSkydome_ = nullptr;

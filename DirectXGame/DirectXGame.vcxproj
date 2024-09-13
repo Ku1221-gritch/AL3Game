@@ -118,6 +118,8 @@
     <ClCompile Include="FadeEffect.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="GameOverText.cpp" />
+    <ClCompile Include="GameScene2.cpp" />
+    <ClCompile Include="GameScene3.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChipField.cpp" />
@@ -160,6 +162,8 @@
     <ClInclude Include="FadeEffect.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="GameOverText.h" />
+    <ClInclude Include="GameScene2.h" />
+    <ClInclude Include="GameScene3.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="MapChipField.h" />

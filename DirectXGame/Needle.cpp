@@ -1,8 +1,8 @@
 #include "Needle.h"
 #include "GameScene.h"
 #include <cassert>
-#include <numbers>
 #include <cmath>
+#include <numbers>
 
 Needle::Needle() {}
 
@@ -20,16 +20,16 @@ void Needle::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 
-	walkTimer_ = 0.0f;
+	timer_ = 0.0f;
 }
 
 void Needle::Update() {
 
 	// タイマーを加算
-	walkTimer_ += 6.0f / 60.0f;
+	timer_ += 6.0f / 60.0f;
 
 	// 回転アニメーション
-	float param = std::sin(walkTimer_);
+	float param = std::sin(timer_);
 	float radian = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
 	worldTransform_.rotation_.y = std::sin(radian);
 
@@ -37,9 +37,7 @@ void Needle::Update() {
 	worldTransform_.UpdateMatrix();
 }
 
-void Needle::Draw() { 
-	model_->Draw(worldTransform_, *viewProjection_); 
-}
+void Needle::Draw() { model_->Draw(worldTransform_, *viewProjection_); }
 
 Vector3 Needle::GetWorldPosition() {
 	// ワールド座標を入れる変数
@@ -64,6 +62,4 @@ AABB Needle::GetAABB() {
 	return aabb;
 }
 
-void Needle::OnCollision(const Player* player) {
-	(void)player; 
-}
+void Needle::OnCollision(const Player* player) { (void)player; }

@@ -10,14 +10,15 @@ GameOverText::~GameOverText() {
 
 void GameOverText::Initialize() {
 	// ゲームオーバーテキストの生成
-	model_ = Model::CreateFromOBJ("gameover", true);
+	model_ = Model::CreateFromOBJ("gameovertext", true);
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	const float kGameOverTextScale = 10.0f;
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = {kGameOverTextScale, kGameOverTextScale, kGameOverTextScale};
 	worldTransform_.rotation_.y = 0.95f * std::numbers::pi_v<float>;
-	worldTransform_.translation_.y = -9.0f;
+	worldTransform_.translation_.y = -5.0f;
+	worldTransform_.translation_.z = -10.0f;
 }
 
 void GameOverText::Update() {
@@ -26,8 +27,8 @@ void GameOverText::Update() {
 
 	float angle = counter_ / kTimeTextMove * 2.0f * std::numbers::pi_v<float>;
 
-	worldTransform_.translation_.y = std::sin(angle) + 10.0f;
-
+	worldTransform_.translation_.y = std::sin(angle) + -4.5f;
+	worldTransform_.translation_.z = std::sin(angle) + -27.5f;
 	viewProjection_.TransferMatrix();
 	worldTransform_.UpdateMatrix();
 }

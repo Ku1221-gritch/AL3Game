@@ -15,10 +15,11 @@ TitleScene::~TitleScene() {
 void TitleScene::Initialize() {
 	modelTitle_ = Model::CreateFromOBJ("text", true);
 	modelPlayer_ = Model::CreateFromOBJ("player");
+	modelText_ = Model::CreateFromOBJ("pressthespaceText",true);
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
-	skydome_ = new Skydome();
-	skydome_->Initialize(modelSkydome_);
+	modelSkydome_ = Model::CreateFromOBJ("titleskydome", true);
+	Skydome_ = new Skydome();
+	Skydome_->Initialize(modelSkydome_);
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -28,10 +29,14 @@ void TitleScene::Initialize() {
 	worldTransformPlayer_.rotation_.y = 0.95f * std::numbers::pi_v<float>;
 	worldTransformPlayer_.translation_.y = -5.0f;
 
-	const float kTextTitle = 10.0f;
+	const float kTitleTextScale = 10.0f;
 	worldTransformTitle_.Initialize();
-	worldTransformTitle_.scale_ = {kTextTitle, kTextTitle, kTextTitle};
+	worldTransformTitle_.scale_ = {kTitleTextScale, kTitleTextScale, kTitleTextScale};
 	worldTransformTitle_.rotation_.y = 0.99f * std::numbers::pi_v<float>;
+
+	worldTransformText_.Initialize();
+	worldTransformText_.scale_ = {kTitleTextScale, kTitleTextScale, kTitleTextScale};
+	worldTransformText_.rotation_.y = 1.03f * std::numbers::pi_v<float>;
 
 	fade_ = new FadeEffect();
 	fade_->Initialize(&viewProjection_, 0.0f, {0, 0, -40},true);
@@ -49,13 +54,15 @@ void TitleScene::Update() {
 	float angle = counter_ / kTimeTitleMove * 2.0f * std::numbers::pi_v<float>;
 
 	worldTransformTitle_.translation_.y = std::sin(angle) + 10.0f;
+	worldTransformText_.translation_.y = std::sin(angle) + 0.0f;
 
 	// スカイドームの更新処理
-	skydome_->Update();
+	Skydome_->Update();
 
 	viewProjection_.TransferMatrix();
 	worldTransformTitle_.UpdateMatrix();
 	worldTransformPlayer_.UpdateMatrix();
+	worldTransformText_.UpdateMatrix();
 }
 
 void TitleScene::Draw() {
@@ -65,9 +72,10 @@ void TitleScene::Draw() {
 
 	Model::PreDraw(commandList);
 	// スカイドームの描画処理
-	skydome_->Draw(&viewProjection_);
+	Skydome_->Draw(&viewProjection_);
 	modelTitle_->Draw(worldTransformTitle_, viewProjection_);
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_);
+	modelText_->Draw(worldTransformText_, viewProjection_);
 	fade_->Draw();
 	Model::PostDraw();
 }
