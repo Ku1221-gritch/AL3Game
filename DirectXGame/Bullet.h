@@ -15,13 +15,19 @@ public:
 
 	void Initialize(Model* model,ViewProjection* viewProjection, const Vector3& position);
 	void Update(Vector3 position);
-	void OnCollision(const Player* player);
+	void Draw();
+	void OnCollision(const Player* player, Vector3 position);
 
 	Vector3 GetWorldPosition();
 	void BulletShot(Vector3 position);
 
 	// AABBを取得
 	AABB GetAABB();
+
+	// 弾の左右の速度制限
+	static inline const float kSpeedLeft = -0.5;
+
+	static inline const float kSpeedRight = 0.5f;
 
 private:
 	//モデル
@@ -41,6 +47,7 @@ private:
 
 	static inline const float kHeight = 1.0f;
 
-	static inline const int kIntervalTimer = 240;
+	static inline const int kIntervalTimer = 120;
+
 
 };

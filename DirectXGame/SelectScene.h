@@ -52,6 +52,10 @@ public: // メンバ関数
 
 	//ステージ1に進む
 	bool ProceedStage1_() const { return proceedStage1_; }
+	//ステージ2に進む
+	bool ProceedStage2_() const { return proceedStage2_; }
+	//ステージ3に進む
+	bool ProceedStage3_() const { return proceedStage3_; }
 	//タイトルに戻る
 	bool IsBackTitle_() const { return backTitle_; }
 
@@ -67,6 +71,22 @@ private: // メンバ変数
 	WorldTransform worldTransformJumpText_;
 	Model* modelBackText_ = nullptr;
 	WorldTransform worldTransformBackText_;
+	//ステージ入るところ
+	Model* modelEntrance1_ = nullptr;
+	WorldTransform worldTransformEntrance1_;
+	Model* modelEntrance2_ = nullptr;
+	WorldTransform worldTransformEntrance2_;
+	Model* modelEntrance3_ = nullptr;
+	WorldTransform worldTransformEntrance3_;
+	Model* modelStage1_ = nullptr;
+	WorldTransform worldTransformStage1_;
+	Model* modelStage2_ = nullptr;
+	WorldTransform worldTransformStage2_;
+	Model* modelStage3_ = nullptr;
+	WorldTransform worldTransformStage3_;
+	Model* modelEnterText_ = nullptr;
+	WorldTransform worldTransformEnterText_;
+	
 	// 画像
 	Sprite* sprite_ = nullptr;
 	// スカイドーム
@@ -79,6 +99,7 @@ private: // メンバ変数
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
+	Vector3 playerPosition;
 	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
@@ -110,6 +131,10 @@ private: // メンバ変数
 
 	//ステージ1に進む
 	bool proceedStage1_ = false;
+	//ステージ2に進む
+	bool proceedStage2_ = false;
+	//ステージ3に進む
+	bool proceedStage3_ = false;
 	//タイトルに戻る
 	bool backTitle_ = false;
 

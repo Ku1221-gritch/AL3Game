@@ -1,42 +1,41 @@
 #pragma once
 
 #include "Audio.h"
-#include "DirectXCommon.h"
-#include "Input.h"
-#include "Model.h"
-#include "Sprite.h"
-#include "Player.h"
-#include "Enemy.h"
 #include "Bullet.h"
-#include "Needle.h"
-#include "Skydome.h"
+#include "CameraController.h"
+#include "DeathParticles.h"
+#include "DebugCamera.h"
+#include "DirectXCommon.h"
+#include "Enemy.h"
+#include "Function.h"
+#include "GameOverText.h"
 #include "Goal.h"
+#include "Input.h"
+#include "MapChipField.h"
+#include "Model.h"
+#include "Needle.h"
+#include "Player.h"
+#include "Skydome.h"
+#include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "DebugCamera.h"
-#include<vector>
-#include "Function.h"
-#include "MapChipField.h"
-#include "DeathParticles.h"
-#include "GameOverText.h"
-#include "CameraController.h"
-#include "FadeEffect.h"
+#include <vector>
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene {
+class GameScene3 {
 
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
-	GameScene();
+	GameScene3();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~GameScene();
+	~GameScene3();
 
 	/// <summary>
 	/// 初期化
@@ -53,45 +52,41 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	//デスフラグのgetter
+	// デスフラグのgetter
 	bool IsDeathFinished() const { return deathFinished_; };
-	//クリアフラグのgetter
+	// クリアフラグのgetter
 	bool IsClear() const { return clearFinished_; };
-	//戻るフラグのgetter
+	// 戻るフラグのgetter
 	bool IsBackSelect() const { return backSelect_; };
 
-	FadeEffect* fade_ = nullptr;
-
 private: // メンバ変数
-	//ゲームのフェーズ（型）
+	// ゲームのフェーズ（型）
 	enum class Phase {
 		kPlay,  // ゲームプレイ
 		kDeath, // デス演出
 	};
 
-	//ゲームの現在フェーズ（変数）
+	// ゲームの現在フェーズ（変数）
 	Phase phase_;
 
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-	//画像
+	// 画像
 	Sprite* sprite_ = nullptr;
-	//スカイドーム
+	// スカイドーム
 	Model* modelSkydome_ = nullptr;
-	Skydome* Skydome_ = nullptr;
-	//ブロック
+	Skydome* skydome_ = nullptr;
+	// ブロック
 	Model* modelBlock_ = nullptr;
-	// 敵
-	Model* modelEnemy_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemies_;
-	static inline const int kEnemyMax = 20;
-#pragma region 敵一体ずつの配置場所
-	intVector2 enemyPos[kEnemyMax] = {
-	    {0, 0},
-        {0,0},
-        {0, 0},
+	// 棘
+	Model* modelNeedle_ = nullptr;
+	Needle* needle_ = nullptr;
+	std::list<Needle*> needles_;
+	intVector2 needlePos[20] = {
+	    {38, 9},
+        {39, 9},
+        {43, 9},
         {0,  0},
         {0,  0},
         {0,  0},
@@ -110,70 +105,40 @@ private: // メンバ変数
         {0,  0},
         {0,  0}
     };
-#pragma endregion
-	//棘
-	Model* modelNeedle_ = nullptr;
-	Needle* needle_ = nullptr;
-	std::list<Needle*> needles_;
-	static inline const int kNeedlesMax = 20;
-#pragma region 棘一つずつの配置場所
-	intVector2 needlePos[kNeedlesMax] = 
-	{
-	    {0, 0},
-        {39, 9},
-		{43, 9},
-        {44, 9},
-        {39, 16},
-        {37, 16},
-        {41, 16},
-        {43, 16},
-        {31, 12},
-        {32, 12},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0},
-        {0, 0}
-	};
-#pragma endregion
-	//マップチップフィールド
+	// マップチップフィールド
 	MapChipField* mapChipField_;
 	// プレイヤー
 	Model* modelPlayer_ = nullptr;
 	Player* player_ = nullptr;
-	//弾
+	// 敵
+	Model* modelEnemy_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
+	// 弾
 	Model* modelBullet_ = nullptr;
 	Bullet* bullet_ = nullptr;
-	Vector3 bulletPosition_;
-	//ゴール
+	// ゴール
 	Model* modelGoal_ = nullptr;
 	Goal* goal_ = nullptr;
-	//デスパーティクル
+	// デスパーティクル
 	Model* modelDeathParticle_ = nullptr;
 	DeathParticles* deathParticles_ = nullptr;
-	//ゲームオーバーテキスト
+	// ゲームオーバーテキスト
 	Model* modelGameOverText_ = nullptr;
 	GameOverText* gameOverText_ = nullptr;
-	//カメラコントローラー
+	// カメラコントローラー
 	CameraController* cameraController_ = nullptr;
-	//デバッグカメラ
+	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
 	bool isDebugCameraActive_ = false;
-	//ハンドル
+	// ハンドル
 	uint32_t textureHandle_ = 0;
-	//音楽データ
 	uint32_t soundDataHandle_ = 0;
-	//音声再生ハンドル
 	uint32_t voiceHandle_ = 0;
-	//トランスフォーム
+	// トランスフォーム
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
-	//ImGuiで値を入力する変数
+	// ImGuiで値を入力する変数
 	float inputFloat3[3] = {0.0f, 0.0f, 0.0f};
 	std::vector<std::vector<WorldTransform*>> worldTransformMapChip_;
 	// カメラ移動範囲
@@ -183,13 +148,13 @@ private: // メンバ変数
 	void CheckAllCollisions();
 	// AABB同士の交差判定
 	bool IsCollision(const AABB& aabb1, const AABB& aabb2);
-	//フェーズの切り替え
+	// フェーズの切り替え
 	void ChangePhase();
-	//死亡による終了フラグ
+	// 死亡による終了フラグ
 	bool deathFinished_ = false;
-	//クリアによる終了フラグ
+	// クリアによる終了フラグ
 	bool clearFinished_ = false;
-	//ステージ選択に戻るフラグ
+	// ステージ選択に戻るフラグ
 	bool backSelect_ = false;
 
 	/// <summary>

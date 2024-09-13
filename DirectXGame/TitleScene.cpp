@@ -9,6 +9,7 @@
 TitleScene::~TitleScene() {
 	delete modelTitle_;
 	delete modelPlayer_;
+	delete fade_;
 }
 
 void TitleScene::Initialize() {
@@ -37,13 +38,18 @@ void TitleScene::Initialize() {
 	worldTransformText_.Initialize();
 	worldTransformText_.scale_ = {kTitleTextScale, kTitleTextScale, kTitleTextScale};
 	worldTransformText_.rotation_.y = 1.03f * std::numbers::pi_v<float>;
+	fade_ = new FadeEffect();
+	fade_->Initialize(&viewProjection_, 0.0f, { 0, 0, -40 }, true);
 	// サウンドデータの読み込み
 	soundDataHandle_ = audio_->LoadWave("music/se.wav");
 	// 音楽再生
 	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
+
+
 void TitleScene::Update() {
+	fade_->Update();
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		finished_ = true;
 		// 音楽停止
@@ -77,5 +83,6 @@ void TitleScene::Draw() {
 	modelTitle_->Draw(worldTransformTitle_, viewProjection_);
 	modelPlayer_->Draw(worldTransformPlayer_, viewProjection_);
 	modelText_->Draw(worldTransformText_, viewProjection_);
+	fade_->Draw();
 	Model::PostDraw();
 }

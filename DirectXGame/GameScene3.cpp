@@ -1,10 +1,10 @@
-#include "GameScene.h"
+#include "GameScene3.h"
 #include "TextureManager.h"
 #include <cassert>
 
-GameScene::GameScene() {}
+GameScene3::GameScene3() {}
 
-GameScene::~GameScene() {
+GameScene3::~GameScene3() {
 	delete sprite_;
 	delete modelBlock_;
 	delete modelSkydome_;
@@ -13,7 +13,6 @@ GameScene::~GameScene() {
 	delete deathParticles_;
 	delete modelDeathParticle_;
 	delete mapChipField_;
-	delete fade_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -35,7 +34,7 @@ GameScene::~GameScene() {
 }
 
 // 初期化
-void GameScene::Initialize() {
+void GameScene3::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -48,13 +47,13 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 
 	// スカイドーム
-	modelSkydome_ = Model::CreateFromOBJ("stageskydome", true);
-	Skydome_ = new Skydome();
-	Skydome_->Initialize(modelSkydome_);
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+	skydome_ = new Skydome();
+	skydome_->Initialize(modelSkydome_);
 
 	// マップチップフィールド
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/firstStage.csv");
+	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
 	GenerateBlocks();
 
 	// ビュープロジェクションの初期化
@@ -65,24 +64,24 @@ void GameScene::Initialize() {
 	//  敵キャラの生成
 	modelEnemy_ = Model::CreateFromOBJ("Enemy", true);
 
-	for (int32_t i = 0; i < kEnemyMax; ++i) {
+	for (int32_t i = 5; i < 50; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(enemyPos[i].x, enemyPos[i].y);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(6 * i, 9);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
+
 		enemies_.push_back(newEnemy);
 		newEnemy->SetMapChipField(mapChipField_);
 	}
 	// 弾
-	bulletPosition_ = mapChipField_->GetMapChipPositionByIndex(25, 44);
 	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
 	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, bulletPosition_);
+	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
 
 	// 棘の生成
 	modelNeedle_ = Model::CreateFromOBJ("needle", true);
 
-	//棘の位置
-	for (int i = 0; i < kNeedlesMax; ++i) {
+	// 棘の位置
+	for (int i = 0; i < 20; ++i) {
 		Needle* newNeedle = new Needle();
 		Vector3 needlePosition = mapChipField_->GetMapChipPositionByIndex(needlePos[i].x, needlePos[i].y);
 		newNeedle->Initialize(modelNeedle_, &viewProjection_, needlePosition);
@@ -90,15 +89,9 @@ void GameScene::Initialize() {
 		newNeedle->SetMapChipField(mapChipField_);
 	}
 
-	// 弾
-	modelBullet_ = Model::CreateFromOBJ("enemyBullet", true);
-	bullet_ = new Bullet();
-	bullet_->Initialize(modelBullet_, &viewProjection_, {-10, -10, 0});
-
 	// 座標をマップチップ番号で指定
 	// プレイヤーの初期位置
-	// Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(20, 44);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(44, 3);
 
 	// 自キャラの生成
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -129,26 +122,15 @@ void GameScene::Initialize() {
 	cameraController_->Reset();
 	// ゲームプレイフェーズから開始
 	phase_ = Phase::kPlay;
+
 	// ゴール
 	modelGoal_ = Model::CreateFromOBJ("goal", true);
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(42, 42);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(30, 9);
 	goal_ = new Goal();
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
-	// フェード
-	Vector3 fadePos = mapChipField_->GetMapChipPositionByIndex(20, 44);
-	fadePos.y += 8;
-	fadePos.z -= 15;
-	fade_ = new FadeEffect();
-	fade_->Initialize(&viewProjection_, 1.3f, fadePos, false);
-	//サウンドデータの読み込み
-	soundDataHandle_ = audio_->LoadWave("music/op.wav");
-	//音楽再生
-	voiceHandle_ = audio_->PlayWave(soundDataHandle_, true);
 }
 
-void GameScene::Update() {
-
-	fade_->Update();
+void GameScene3::Update() {
 
 	ChangePhase();
 
@@ -179,7 +161,7 @@ void GameScene::Update() {
 		CheckAllCollisions();
 
 		// スカイドームの更新処理
-		Skydome_->Update();
+		skydome_->Update();
 
 		// 敵キャラの更新
 		for (Enemy* enemy : enemies_) {
@@ -190,7 +172,6 @@ void GameScene::Update() {
 		for (Needle* needle : needles_) {
 			needle->Update();
 		}
-		bullet_->Update(bulletPosition_);
 
 		// ゴールの更新
 		goal_->Update();
@@ -223,7 +204,6 @@ void GameScene::Update() {
 
 		gameOverText_->Update();
 
-
 #ifdef _DEBUG
 		if (input_->TriggerKey(DIK_Q)) {
 			if (isDebugCameraActive_ == true) {
@@ -244,7 +224,7 @@ void GameScene::Update() {
 	}
 }
 
-void GameScene::Draw() {
+void GameScene3::Draw() {
 
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
@@ -271,17 +251,6 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	// プレイヤーの描画処理
-	if (!player_->IsDead()) {
-		player_->Draw();
-		// 敵の描画処理
-		for (Enemy* enemy : enemies_) {
-			enemy->Draw();
-		}
-	} else if (player_->IsDead()) {
-		gameOverText_->Draw();
-	}
-
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformMapChip_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -293,8 +262,17 @@ void GameScene::Draw() {
 	}
 
 	// スカイドームの描画処理
-	Skydome_->Draw(&viewProjection_);
-
+	skydome_->Draw(&viewProjection_);
+	// プレイヤーの描画処理
+	if (!player_->IsDead()) {
+		player_->Draw();
+		// 敵の描画処理
+		for (Enemy* enemy : enemies_) {
+			enemy->Draw();
+		}
+	} else if (player_->IsDead()) {
+		gameOverText_->Draw();
+	}
 	// 敵の描画処理
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
@@ -303,8 +281,6 @@ void GameScene::Draw() {
 	for (Needle* needle : needles_) {
 		needle->Draw();
 	}
-	// 弾の描画
-	bullet_->Draw();
 	// ゴールの描画
 	goal_->Draw();
 
@@ -312,10 +288,6 @@ void GameScene::Draw() {
 	if (deathParticles_) {
 		deathParticles_->Draw();
 	}
-
-	// フェード
-	fade_->Draw();
-
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -335,7 +307,7 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
-void GameScene::GenerateBlocks() {
+void GameScene3::GenerateBlocks() {
 	// 要素数
 	uint32_t kNumMapChipVirtical = mapChipField_->GetNumMapChipVirtical();
 	uint32_t kNumMapChipHorizontal = mapChipField_->GetNumMapChipHorizontal();
@@ -357,7 +329,7 @@ void GameScene::GenerateBlocks() {
 	}
 }
 
-void GameScene::CheckAllCollisions() {
+void GameScene3::CheckAllCollisions() {
 #pragma region プレイヤーの当たり判定
 	{
 		// 判定対象1と2の座標
@@ -381,7 +353,8 @@ void GameScene::CheckAllCollisions() {
 			}
 			// 敵の弾との衝突判定
 			if (IsCollision(aabb1, aabb4)) {
-				player_->OnCollisionBullet();
+				//bullet_->OnCollision(player_);
+				player_->OnCollision(enemy);
 			}
 		}
 		// プレイヤーとゴールの当たり判定
@@ -408,7 +381,7 @@ void GameScene::CheckAllCollisions() {
 }
 
 // AABB同士の交差判定
-bool GameScene::IsCollision(const AABB& aabb1, const AABB& aabb2) {
+bool GameScene3::IsCollision(const AABB& aabb1, const AABB& aabb2) {
 	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && (aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && (aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z)) {
 
 		return true;
@@ -416,7 +389,7 @@ bool GameScene::IsCollision(const AABB& aabb1, const AABB& aabb2) {
 	return false;
 }
 
-void GameScene::ChangePhase() {
+void GameScene3::ChangePhase() {
 	switch (phase_) {
 	case Phase::kPlay:
 		if (player_->IsDead()) {
@@ -428,8 +401,6 @@ void GameScene::ChangePhase() {
 			deathParticles_ = new DeathParticles;
 
 			deathParticles_->Initialize(modelDeathParticle_, &viewProjection_, deathParticlesPosition);
-			// 音楽停止
-			audio_->StopWave(voiceHandle_);
 		}
 		break;
 	case Phase::kDeath:
